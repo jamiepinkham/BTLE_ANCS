@@ -9,7 +9,7 @@ I wanted to see what it was all about, so I wrote a Mac client for ANCS.
 
 A few caveats:
 * I wrote this late and quick, it's not the best design. I've spent maybe 5 hours on it total.
-* Getting an app's display name [just doesn't work](https://devforums.apple.com/message/876984#876984). In the code's current state, kicking off that transaction will deadlock the transaction queue.
+* Getting an app's display name [just doesn't work](https://devforums.apple.com/message/876984#876984). In the code's current state, ~~kicking off that transaction will deadlock the transaction queue~~ all transactions will timeout after 10 seconds if not completed.
 * You have to run the iOS app and tap start broadcasting in order for the Mac client to see the ANCS service. (No clue on that)
 * There's no UI. Just watch the log messages.
 * Best way to see it in action is get yourself all connected up and then send yourself an iMessage.
