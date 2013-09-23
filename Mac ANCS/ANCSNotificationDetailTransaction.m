@@ -15,7 +15,7 @@ static uint8_t const kANCSCommandIDGetNotificationAttributes = 0x0;
 static uint16_t const kANCSAttributeMaxLength = 0xffff;
 @interface ANCSNotificationDetailTransaction ()
 
-@property (nonatomic, strong) NSMutableDictionary *tuples;
+@property (nonatomic, strong) NSDictionary *tuples;
 @property (nonatomic, assign) ANCSNotificationDetailTuple *currentTuple;
 @property (nonatomic, assign) ANCSNotificationDetailsTypeMask mask;
 @property (nonatomic, strong) NSMutableData *accumulatedData;
@@ -30,7 +30,6 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 	if (self)
 	{
 		_notification = note;
-		_tuples = [[NSMutableDictionary alloc] init];
 		_mask = mask;
 		_accumulatedData = [[NSMutableData alloc] init];
 		
@@ -39,40 +38,34 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 }
 
 
-- (NSMutableDictionary *)tuples
+- (NSDictionary *)tuples
 {
 	if(_tuples == nil)
 	{
-		_tuples = [[NSMutableDictionary alloc] init];
+		_tuples = [self buildTuples:self.mask];
 	}
 	return _tuples;
 }
 
-- (void)buildTuples:(ANCSNotificationDetailsTypeMask)mask
+- (NSDictionary *)buildTuples:(ANCSNotificationDetailsTypeMask)mask
 {
-	ANCSNotificationAttributeType type = ANCSNotificationAttributeTypeReserved;
-	while(type > 0)
+	NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+	NSInteger type = ANCSNotificationAttributeTypeReserved;
+	while(type >= 0)
 	{
 		if(mask & (1 << type))
 		{
 			ANCSNotificationDetailTuple *tuple = [[ANCSNotificationDetailTuple alloc] init];
 			tuple.attributeType = type;
-			self.tuples[@(tuple.attributeType)] = tuple;
+			dict[@(tuple.attributeType)] = tuple;
 		}
 		type--;
 	}
-	//special case for 0 value
-	if(mask & ANCSNotificationDetailsTypeMaskAppIdentifier)
-	{
-		ANCSNotificationDetailTuple *tuple = [[ANCSNotificationDetailTuple alloc] init];
-		tuple.attributeType = ANCSNotificationAttributeTypeAppIdentifier;
-		self.tuples[@(tuple.attributeType)] = tuple;
-	}
+	return [dict copy];
 }
 
 - (NSData *)buildCommandData
 {
-	[self buildTuples:self.mask];
 	NSMutableData *data = [[NSMutableData alloc] init];
 	
 	[data appendBytes:&kANCSCommandIDGetNotificationAttributes length:sizeof(kANCSCommandIDGetNotificationAttributes)];

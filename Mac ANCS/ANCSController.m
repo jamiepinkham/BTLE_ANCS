@@ -90,7 +90,6 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	{
 		self.currentTransaction = [[ANCSNotificationDetailTransaction alloc] initWithNotification:localNote detailsMask:mask];
 		NSData *packet = [self.currentTransaction buildCommandData];
-//		NSData *packet = [self buildNotificationAttributesCommandForNotification:notification];
 		CBPeripheral *peripheral = [self.ncsToPeripheral objectForKey:notificationCenter];
 		[peripheral writeValue:packet forCharacteristic:self.controlPointCharacteristic type:CBCharacteristicWriteWithResponse];
 	}
@@ -252,13 +251,6 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 
 			
 		}
-//		NSData *data = [characteristic value];
-//		uint8_t commandId;
-//		uint32_t notificationId;
-//		[data getBytes:&commandId range:NSMakeRange(0, sizeof(commandId))];
-//		[data getBytes:&notificationId range:NSMakeRange(1, sizeof(notificationId))];
-//		notificationId = CFSwapInt32LittleToHost(notificationId);
-		
 	}
 }
 

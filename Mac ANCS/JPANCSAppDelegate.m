@@ -9,6 +9,7 @@
 #import "JPANCSAppDelegate.h"
 #import "ANCSController.h"
 #import "ANCSNotificationCenter.h"
+#import "ANCSNotification.h"
 
 @interface JPANCSAppDelegate () <ANCSControllerDelegate>
 
@@ -52,8 +53,14 @@
 }
 - (void)controller:(ANCSController *)controller receivedNotification:(ANCSNotification *)notification notificationCenter:(ANCSNotificationCenter *)notificationCenter
 {
-//	NSLog(@"controller recieved notification = %@", notification);
-	[controller getAttributesForNotification:notification detailsMask:ANCSNotificationDetailsTypeMaskAll notificationCenter:notificationCenter];
+	if([notification notificationType] == ANCSEventNotificationTypeRemoved)
+	{
+		NSLog(@"removed notification = %@", notification);
+	}
+	else
+	{
+		[controller getAttributesForNotification:notification detailsMask:ANCSNotificationDetailsTypeMaskAll notificationCenter:notificationCenter];
+	}
 }
 
 - (void)controller:(ANCSController *)controller didUpdateNotificationDetails:(ANCSNotificationDetails *)notificationDetails notification:(ANCSNotification *)notification notificationCenter:(ANCSNotificationCenter *)notificationCenter
