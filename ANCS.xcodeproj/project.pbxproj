@@ -14,10 +14,6 @@
 		502E62BF17ED20E900B0478C /* JPANCSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62BE17ED20E900B0478C /* JPANCSAppDelegate.m */; };
 		502E62C217ED20E900B0478C /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 502E62C017ED20E900B0478C /* MainMenu.xib */; };
 		502E62C417ED20E900B0478C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 502E62C317ED20E900B0478C /* Images.xcassets */; };
-		502E62CB17ED20EA00B0478C /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 502E62CA17ED20EA00B0478C /* XCTest.framework */; };
-		502E62CC17ED20EA00B0478C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 502E62AB17ED20E900B0478C /* Cocoa.framework */; };
-		502E62D417ED20EA00B0478C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 502E62D217ED20EA00B0478C /* InfoPlist.strings */; };
-		502E62D617ED20EA00B0478C /* Mac_ANCSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62D517ED20EA00B0478C /* Mac_ANCSTests.m */; };
 		502E62E017ED20F900B0478C /* IOBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 502E62DF17ED20F900B0478C /* IOBluetooth.framework */; };
 		502E62E317ED211700B0478C /* ANCSController.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62E217ED211700B0478C /* ANCSController.m */; };
 		502E62E617ED231600B0478C /* ANCSNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62E517ED231600B0478C /* ANCSNotification.m */; };
@@ -27,17 +23,17 @@
 		502E62F217EEA98400B0478C /* ANCSDetailTuple.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62F117EEA98400B0478C /* ANCSDetailTuple.m */; };
 		502E62F517EFC51900B0478C /* ANCSTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62F417EFC51900B0478C /* ANCSTransaction.m */; };
 		502E62F817EFE82400B0478C /* ANCSAppNameTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62F717EFE82400B0478C /* ANCSAppNameTransaction.m */; };
+		502E62FF17EFF7FC00B0478C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 502E62FE17EFF7FC00B0478C /* Foundation.framework */; };
+		502E630117EFF7FC00B0478C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 502E630017EFF7FC00B0478C /* CoreGraphics.framework */; };
+		502E630317EFF7FC00B0478C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 502E630217EFF7FC00B0478C /* UIKit.framework */; };
+		502E630917EFF7FC00B0478C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 502E630717EFF7FC00B0478C /* InfoPlist.strings */; };
+		502E630B17EFF7FC00B0478C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E630A17EFF7FC00B0478C /* main.m */; };
+		502E630F17EFF7FC00B0478C /* ANCSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E630E17EFF7FC00B0478C /* ANCSAppDelegate.m */; };
+		502E631217EFF7FC00B0478C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 502E631017EFF7FC00B0478C /* Main.storyboard */; };
+		502E631517EFF7FC00B0478C /* ANCSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E631417EFF7FC00B0478C /* ANCSViewController.m */; };
+		502E631717EFF7FC00B0478C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 502E631617EFF7FC00B0478C /* Images.xcassets */; };
+		502E634117EFF89700B0478C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 502E634017EFF89700B0478C /* CoreBluetooth.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		502E62CD17ED20EA00B0478C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 502E62A017ED20E900B0478C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 502E62A717ED20E900B0478C;
-			remoteInfo = "Mac ANCS";
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		502E62A817ED20E900B0478C /* ANCS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ANCS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,7 +50,6 @@
 		502E62BE17ED20E900B0478C /* JPANCSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JPANCSAppDelegate.m; sourceTree = "<group>"; };
 		502E62C117ED20E900B0478C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		502E62C317ED20E900B0478C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		502E62C917ED20EA00B0478C /* ANCSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ANCSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		502E62CA17ED20EA00B0478C /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		502E62D117ED20EA00B0478C /* ANCSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ANCSTests-Info.plist"; sourceTree = "<group>"; };
 		502E62D317ED20EA00B0478C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -76,6 +71,25 @@
 		502E62F417EFC51900B0478C /* ANCSTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANCSTransaction.m; sourceTree = "<group>"; };
 		502E62F617EFE82400B0478C /* ANCSAppNameTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANCSAppNameTransaction.h; sourceTree = "<group>"; };
 		502E62F717EFE82400B0478C /* ANCSAppNameTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANCSAppNameTransaction.m; sourceTree = "<group>"; };
+		502E62FD17EFF7FC00B0478C /* ANCS iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ANCS iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		502E62FE17EFF7FC00B0478C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		502E630017EFF7FC00B0478C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		502E630217EFF7FC00B0478C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		502E630617EFF7FC00B0478C /* ANCS iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ANCS iOS-Info.plist"; sourceTree = "<group>"; };
+		502E630817EFF7FC00B0478C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		502E630A17EFF7FC00B0478C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		502E630C17EFF7FC00B0478C /* ANCS iOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ANCS iOS-Prefix.pch"; sourceTree = "<group>"; };
+		502E630D17EFF7FC00B0478C /* ANCSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ANCSAppDelegate.h; sourceTree = "<group>"; };
+		502E630E17EFF7FC00B0478C /* ANCSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ANCSAppDelegate.m; sourceTree = "<group>"; };
+		502E631117EFF7FC00B0478C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		502E631317EFF7FC00B0478C /* ANCSViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ANCSViewController.h; sourceTree = "<group>"; };
+		502E631417EFF7FC00B0478C /* ANCSViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ANCSViewController.m; sourceTree = "<group>"; };
+		502E631617EFF7FC00B0478C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		502E632417EFF7FC00B0478C /* ANCS iOSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ANCS iOSTests-Info.plist"; sourceTree = "<group>"; };
+		502E632617EFF7FC00B0478C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		502E632817EFF7FC00B0478C /* ANCS_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ANCS_iOSTests.m; sourceTree = "<group>"; };
+		502E633F17EFF88200B0478C /* ANCS iOSTests copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ANCS iOSTests copy-Info.plist"; path = "/Users/jamie.pinkham/Documents/Projects/Mac ANCS/ANCS iOSTests copy-Info.plist"; sourceTree = "<absolute>"; };
+		502E634017EFF89700B0478C /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreBluetooth.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,12 +102,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		502E62C617ED20EA00B0478C /* Frameworks */ = {
+		502E62FA17EFF7FC00B0478C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				502E62CC17ED20EA00B0478C /* Cocoa.framework in Frameworks */,
-				502E62CB17ED20EA00B0478C /* XCTest.framework in Frameworks */,
+				502E634117EFF89700B0478C /* CoreBluetooth.framework in Frameworks */,
+				502E630117EFF7FC00B0478C /* CoreGraphics.framework in Frameworks */,
+				502E630317EFF7FC00B0478C /* UIKit.framework in Frameworks */,
+				502E62FF17EFF7FC00B0478C /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,8 +121,11 @@
 			children = (
 				502E62B117ED20E900B0478C /* Mac ANCS */,
 				502E62CF17ED20EA00B0478C /* Mac ANCSTests */,
+				502E630417EFF7FC00B0478C /* ANCS iOS */,
+				502E632217EFF7FC00B0478C /* ANCS iOSTests */,
 				502E62AA17ED20E900B0478C /* Frameworks */,
 				502E62A917ED20E900B0478C /* Products */,
+				502E633F17EFF88200B0478C /* ANCS iOSTests copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -114,7 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				502E62A817ED20E900B0478C /* ANCS.app */,
-				502E62C917ED20EA00B0478C /* ANCSTests.xctest */,
+				502E62FD17EFF7FC00B0478C /* ANCS iOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -122,9 +141,13 @@
 		502E62AA17ED20E900B0478C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				502E634017EFF89700B0478C /* CoreBluetooth.framework */,
 				502E62DF17ED20F900B0478C /* IOBluetooth.framework */,
 				502E62AB17ED20E900B0478C /* Cocoa.framework */,
 				502E62CA17ED20EA00B0478C /* XCTest.framework */,
+				502E62FE17EFF7FC00B0478C /* Foundation.framework */,
+				502E630017EFF7FC00B0478C /* CoreGraphics.framework */,
+				502E630217EFF7FC00B0478C /* UIKit.framework */,
 				502E62AD17ED20E900B0478C /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -198,6 +221,49 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		502E630417EFF7FC00B0478C /* ANCS iOS */ = {
+			isa = PBXGroup;
+			children = (
+				502E630D17EFF7FC00B0478C /* ANCSAppDelegate.h */,
+				502E630E17EFF7FC00B0478C /* ANCSAppDelegate.m */,
+				502E631017EFF7FC00B0478C /* Main.storyboard */,
+				502E631317EFF7FC00B0478C /* ANCSViewController.h */,
+				502E631417EFF7FC00B0478C /* ANCSViewController.m */,
+				502E631617EFF7FC00B0478C /* Images.xcassets */,
+				502E630517EFF7FC00B0478C /* Supporting Files */,
+			);
+			path = "ANCS iOS";
+			sourceTree = "<group>";
+		};
+		502E630517EFF7FC00B0478C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				502E630617EFF7FC00B0478C /* ANCS iOS-Info.plist */,
+				502E630717EFF7FC00B0478C /* InfoPlist.strings */,
+				502E630A17EFF7FC00B0478C /* main.m */,
+				502E630C17EFF7FC00B0478C /* ANCS iOS-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		502E632217EFF7FC00B0478C /* ANCS iOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				502E632817EFF7FC00B0478C /* ANCS_iOSTests.m */,
+				502E632317EFF7FC00B0478C /* Supporting Files */,
+			);
+			path = "ANCS iOSTests";
+			sourceTree = "<group>";
+		};
+		502E632317EFF7FC00B0478C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				502E632417EFF7FC00B0478C /* ANCS iOSTests-Info.plist */,
+				502E632517EFF7FC00B0478C /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -218,23 +284,22 @@
 			productReference = 502E62A817ED20E900B0478C /* ANCS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		502E62C817ED20EA00B0478C /* ANCSTests */ = {
+		502E62FC17EFF7FC00B0478C /* ANCS iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 502E62DC17ED20EA00B0478C /* Build configuration list for PBXNativeTarget "ANCSTests" */;
+			buildConfigurationList = 502E632A17EFF7FC00B0478C /* Build configuration list for PBXNativeTarget "ANCS iOS" */;
 			buildPhases = (
-				502E62C517ED20EA00B0478C /* Sources */,
-				502E62C617ED20EA00B0478C /* Frameworks */,
-				502E62C717ED20EA00B0478C /* Resources */,
+				502E62F917EFF7FC00B0478C /* Sources */,
+				502E62FA17EFF7FC00B0478C /* Frameworks */,
+				502E62FB17EFF7FC00B0478C /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				502E62CE17ED20EA00B0478C /* PBXTargetDependency */,
 			);
-			name = ANCSTests;
-			productName = "Mac ANCSTests";
-			productReference = 502E62C917ED20EA00B0478C /* ANCSTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
+			name = "ANCS iOS";
+			productName = "ANCS iOS";
+			productReference = 502E62FD17EFF7FC00B0478C /* ANCS iOS.app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -245,11 +310,6 @@
 				CLASSPREFIX = JPANCS;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Jamie Pinkham";
-				TargetAttributes = {
-					502E62C817ED20EA00B0478C = {
-						TestTargetID = 502E62A717ED20E900B0478C;
-					};
-				};
 			};
 			buildConfigurationList = 502E62A317ED20E900B0478C /* Build configuration list for PBXProject "ANCS" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -265,7 +325,7 @@
 			projectRoot = "";
 			targets = (
 				502E62A717ED20E900B0478C /* ANCS */,
-				502E62C817ED20EA00B0478C /* ANCSTests */,
+				502E62FC17EFF7FC00B0478C /* ANCS iOS */,
 			);
 		};
 /* End PBXProject section */
@@ -282,11 +342,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		502E62C717ED20EA00B0478C /* Resources */ = {
+		502E62FB17EFF7FC00B0478C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				502E62D417ED20EA00B0478C /* InfoPlist.strings in Resources */,
+				502E631717EFF7FC00B0478C /* Images.xcassets in Resources */,
+				502E630917EFF7FC00B0478C /* InfoPlist.strings in Resources */,
+				502E631217EFF7FC00B0478C /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,23 +372,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		502E62C517ED20EA00B0478C /* Sources */ = {
+		502E62F917EFF7FC00B0478C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				502E62D617ED20EA00B0478C /* Mac_ANCSTests.m in Sources */,
+				502E630B17EFF7FC00B0478C /* main.m in Sources */,
+				502E631517EFF7FC00B0478C /* ANCSViewController.m in Sources */,
+				502E630F17EFF7FC00B0478C /* ANCSAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		502E62CE17ED20EA00B0478C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 502E62A717ED20E900B0478C /* ANCS */;
-			targetProxy = 502E62CD17ED20EA00B0478C /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		502E62B417ED20E900B0478C /* InfoPlist.strings */ = {
@@ -357,6 +413,30 @@
 			isa = PBXVariantGroup;
 			children = (
 				502E62D317ED20EA00B0478C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		502E630717EFF7FC00B0478C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				502E630817EFF7FC00B0478C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		502E631017EFF7FC00B0478C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				502E631117EFF7FC00B0478C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		502E632517EFF7FC00B0478C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				502E632617EFF7FC00B0478C /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -435,7 +515,7 @@
 		502E62DA17ED20EA00B0478C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -450,7 +530,7 @@
 		502E62DB17ED20EA00B0478C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -462,43 +542,52 @@
 			};
 			name = Release;
 		};
-		502E62DD17ED20EA00B0478C /* Debug */ = {
+		502E632B17EFF7FC00B0478C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Mac ANCS.app/Contents/MacOS/Mac ANCS";
-				COMBINE_HIDPI_IMAGES = YES;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Mac ANCS/Mac ANCS-Prefix.pch";
+				GCC_PREFIX_HEADER = "ANCS iOS/ANCS iOS-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "Mac ANCSTests/ANCSTests-Info.plist";
-				PRODUCT_NAME = ANCSTests;
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
+				INFOPLIST_FILE = "ANCS iOS/ANCS iOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
 		};
-		502E62DE17ED20EA00B0478C /* Release */ = {
+		502E632C17EFF7FC00B0478C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Mac ANCS.app/Contents/MacOS/Mac ANCS";
-				COMBINE_HIDPI_IMAGES = YES;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Mac ANCS/Mac ANCS-Prefix.pch";
-				INFOPLIST_FILE = "Mac ANCSTests/ANCSTests-Info.plist";
-				PRODUCT_NAME = ANCSTests;
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
+				GCC_PREFIX_HEADER = "ANCS iOS/ANCS iOS-Prefix.pch";
+				INFOPLIST_FILE = "ANCS iOS/ANCS iOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
 		};
@@ -523,14 +612,13 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		502E62DC17ED20EA00B0478C /* Build configuration list for PBXNativeTarget "ANCSTests" */ = {
+		502E632A17EFF7FC00B0478C /* Build configuration list for PBXNativeTarget "ANCS iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				502E62DD17ED20EA00B0478C /* Debug */,
-				502E62DE17ED20EA00B0478C /* Release */,
+				502E632B17EFF7FC00B0478C /* Debug */,
+				502E632C17EFF7FC00B0478C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
