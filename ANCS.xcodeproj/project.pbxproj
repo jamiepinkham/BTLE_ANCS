@@ -24,7 +24,9 @@
 		502E62E917ED25C400B0478C /* ANCSNotificationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62E817ED25C400B0478C /* ANCSNotificationCenter.m */; };
 		502E62EC17EE9CDB00B0478C /* ANCSNotificationDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62EB17EE9CDB00B0478C /* ANCSNotificationDetails.m */; };
 		502E62EF17EEA6D500B0478C /* ANCSNotificationDetailTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62EE17EEA6D500B0478C /* ANCSNotificationDetailTransaction.m */; };
-		502E62F217EEA98400B0478C /* ANCSNotificationDetailTuple.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62F117EEA98400B0478C /* ANCSNotificationDetailTuple.m */; };
+		502E62F217EEA98400B0478C /* ANCSDetailTuple.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62F117EEA98400B0478C /* ANCSDetailTuple.m */; };
+		502E62F517EFC51900B0478C /* ANCSTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62F417EFC51900B0478C /* ANCSTransaction.m */; };
+		502E62F817EFE82400B0478C /* ANCSAppNameTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E62F717EFE82400B0478C /* ANCSAppNameTransaction.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,8 +70,12 @@
 		502E62EB17EE9CDB00B0478C /* ANCSNotificationDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANCSNotificationDetails.m; sourceTree = "<group>"; };
 		502E62ED17EEA6D500B0478C /* ANCSNotificationDetailTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANCSNotificationDetailTransaction.h; sourceTree = "<group>"; };
 		502E62EE17EEA6D500B0478C /* ANCSNotificationDetailTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANCSNotificationDetailTransaction.m; sourceTree = "<group>"; };
-		502E62F017EEA98400B0478C /* ANCSNotificationDetailTuple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANCSNotificationDetailTuple.h; sourceTree = "<group>"; };
-		502E62F117EEA98400B0478C /* ANCSNotificationDetailTuple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANCSNotificationDetailTuple.m; sourceTree = "<group>"; };
+		502E62F017EEA98400B0478C /* ANCSDetailTuple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANCSDetailTuple.h; sourceTree = "<group>"; };
+		502E62F117EEA98400B0478C /* ANCSDetailTuple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANCSDetailTuple.m; sourceTree = "<group>"; };
+		502E62F317EFC51900B0478C /* ANCSTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANCSTransaction.h; sourceTree = "<group>"; };
+		502E62F417EFC51900B0478C /* ANCSTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANCSTransaction.m; sourceTree = "<group>"; };
+		502E62F617EFE82400B0478C /* ANCSAppNameTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANCSAppNameTransaction.h; sourceTree = "<group>"; };
+		502E62F717EFE82400B0478C /* ANCSAppNameTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANCSAppNameTransaction.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,10 +156,14 @@
 				502E62EB17EE9CDB00B0478C /* ANCSNotificationDetails.m */,
 				502E62E717ED25C400B0478C /* ANCSNotificationCenter.h */,
 				502E62E817ED25C400B0478C /* ANCSNotificationCenter.m */,
+				502E62F317EFC51900B0478C /* ANCSTransaction.h */,
+				502E62F417EFC51900B0478C /* ANCSTransaction.m */,
+				502E62F617EFE82400B0478C /* ANCSAppNameTransaction.h */,
+				502E62F717EFE82400B0478C /* ANCSAppNameTransaction.m */,
 				502E62ED17EEA6D500B0478C /* ANCSNotificationDetailTransaction.h */,
 				502E62EE17EEA6D500B0478C /* ANCSNotificationDetailTransaction.m */,
-				502E62F017EEA98400B0478C /* ANCSNotificationDetailTuple.h */,
-				502E62F117EEA98400B0478C /* ANCSNotificationDetailTuple.m */,
+				502E62F017EEA98400B0478C /* ANCSDetailTuple.h */,
+				502E62F117EEA98400B0478C /* ANCSDetailTuple.m */,
 			);
 			path = "Mac ANCS";
 			sourceTree = "<group>";
@@ -288,9 +298,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				502E62E617ED231600B0478C /* ANCSNotification.m in Sources */,
-				502E62F217EEA98400B0478C /* ANCSNotificationDetailTuple.m in Sources */,
+				502E62F217EEA98400B0478C /* ANCSDetailTuple.m in Sources */,
+				502E62F817EFE82400B0478C /* ANCSAppNameTransaction.m in Sources */,
 				502E62B817ED20E900B0478C /* main.m in Sources */,
 				502E62EC17EE9CDB00B0478C /* ANCSNotificationDetails.m in Sources */,
+				502E62F517EFC51900B0478C /* ANCSTransaction.m in Sources */,
 				502E62E917ED25C400B0478C /* ANCSNotificationCenter.m in Sources */,
 				502E62EF17EEA6D500B0478C /* ANCSNotificationDetailTransaction.m in Sources */,
 				502E62E317ED211700B0478C /* ANCSController.m in Sources */,

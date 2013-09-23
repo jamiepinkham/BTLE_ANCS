@@ -7,7 +7,7 @@
 //
 
 #import "ANCSNotificationDetailTransaction.h"
-#import "ANCSNotificationDetailTuple.h"
+#import "ANCSDetailTuple.h"
 #import "ANCSNotification.h"
 #import "ANCSNotificationDetails.h"
 
@@ -16,9 +16,9 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 @interface ANCSNotificationDetailTransaction ()
 
 @property (nonatomic, strong) NSDictionary *tuples;
-@property (nonatomic, assign) ANCSNotificationDetailTuple *currentTuple;
+@property (nonatomic, assign) ANCSDetailTuple *currentTuple;
 @property (nonatomic, assign) ANCSNotificationDetailsTypeMask mask;
-@property (nonatomic, strong) NSMutableData *accumulatedData;
+@property (nonatomic, readonly) ANCSNotification *notification;
 
 @end
 
@@ -31,12 +31,10 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 	{
 		_notification = note;
 		_mask = mask;
-		_accumulatedData = [[NSMutableData alloc] init];
 		
 	}
 	return self;
 }
-
 
 - (NSDictionary *)tuples
 {
@@ -47,22 +45,7 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 	return _tuples;
 }
 
-- (NSDictionary *)buildTuples:(ANCSNotificationDetailsTypeMask)mask
-{
-	NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-	NSInteger type = ANCSNotificationAttributeTypeReserved;
-	while(type >= 0)
-	{
-		if(mask & (1 << type))
-		{
-			ANCSNotificationDetailTuple *tuple = [[ANCSNotificationDetailTuple alloc] init];
-			tuple.attributeType = type;
-			dict[@(tuple.attributeType)] = tuple;
-		}
-		type--;
-	}
-	return [dict copy];
-}
+#pragma mark - overrides
 
 - (NSData *)buildCommandData
 {
@@ -75,9 +58,9 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 	[data appendBytes:&notificationId length:sizeof(notificationId)];
 	
 	NSArray *orderedTuples = [self orderedTuples];
-	for(ANCSNotificationDetailTuple *tuple in orderedTuples)
+	for(ANCSDetailTuple *tuple in orderedTuples)
 	{
-		ANCSNotificationAttributeType type = tuple.attributeType;
+		ANCSNotificationAttributeType type = tuple.attributeIdentifier;
 		[data appendBytes:&type length:sizeof(ANCSNotificationAttributeType)];
 		
 		if(type == ANCSNotificationAttributeTypeTitle || type == ANCSNotificationAttributeTypeSubtitle || type == ANCSNotificationAttributeTypeMessage)
@@ -91,19 +74,19 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 
 - (void)appendData:(NSData *)data
 {
+	[super appendData:data];
 	if(!self.complete)
 	{
-		[self.accumulatedData appendData:data];
-		if([self.accumulatedData length] < 6)
+		if([self.transactionData length] < 6)
 		{
 			return;
 		}
 		if(self.currentTuple == nil)
 		{
 			ANCSNotificationAttributeType type;
-			[self.accumulatedData getBytes:&type range:NSMakeRange(5, 1)];
+			[self.transactionData getBytes:&type range:NSMakeRange(5, 1)];
 			self.currentTuple = self.tuples[@(type)];
-			data = [data subdataWithRange:NSMakeRange(5, [self.accumulatedData length] - 5)];
+			data = [data subdataWithRange:NSMakeRange(5, [self.transactionData length] - 5)];
 		}
 		NSData *leftOver = [[self currentTuple] appendData:data];
 		while(leftOver != nil)
@@ -118,13 +101,13 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 
 -(BOOL)isComplete
 {
-	if([self.accumulatedData length] < 6)
+	if([self.transactionData length] < 6)
 	{
 		return NO;
 	}
 	__block BOOL complete = YES;
 	[[self.tuples allValues] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		ANCSNotificationDetailTuple *tuple = (ANCSNotificationDetailTuple *)obj;
+		ANCSDetailTuple *tuple = (ANCSDetailTuple *)obj;
 		complete = [tuple isComplete];
 		if(!complete)
 		{
@@ -134,14 +117,16 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 	return complete;
 }
 
-- (ANCSNotificationDetails *)buildDetails
+- (id)result
 {
 	ANCSNotificationDetails *detail = [[ANCSNotificationDetails alloc] init];
-	
+	uint32_t notificationId;
+	[self.transactionData getBytes:&notificationId range:NSMakeRange(1, sizeof(uint32_t))];
+	detail.notificationId = CFSwapInt32LittleToHost(notificationId);
 	NSArray *allTuples = [self orderedTuples];
-	for (ANCSNotificationDetailTuple *tuple in allTuples)
+	for (ANCSDetailTuple *tuple in allTuples)
 	{
-		switch (tuple.attributeType) {
+		switch (tuple.attributeIdentifier) {
 			case ANCSNotificationAttributeTypeMessage:
 				detail.message = [tuple value];
 				break;
@@ -172,9 +157,11 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 	return detail;
 }
 
+#pragma mark - helpers
+
 - (NSArray *)orderedTuples
 {
-	NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"attributeType" ascending:YES];
+	NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"attributeIdentifier" ascending:YES];
 	
 	NSArray *orderedTuples = [[self.tuples allValues] sortedArrayUsingDescriptors:@[sort]];
 	
@@ -190,6 +177,23 @@ static NSDateFormatter *formatter = nil;
 		[formatter setDateFormat:@"yyyyMMdd'T'HHmmSS"];
 	}
 	return formatter;
+}
+
+- (NSDictionary *)buildTuples:(ANCSNotificationDetailsTypeMask)mask
+{
+	NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+	NSInteger type = ANCSNotificationAttributeTypeReserved;
+	while(type >= 0)
+	{
+		if(mask & (1 << type))
+		{
+			ANCSDetailTuple *tuple = [[ANCSDetailTuple alloc] init];
+			tuple.attributeIdentifier = type;
+			dict[@(tuple.attributeIdentifier)] = tuple;
+		}
+		type--;
+	}
+	return [dict copy];
 }
 
 @end

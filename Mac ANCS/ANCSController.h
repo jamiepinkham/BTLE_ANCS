@@ -54,7 +54,7 @@ typedef NS_ENUM(uint8_t, ANCSAppAttributeType)
 - (void)stopScanning;
 - (void)connectToNotificationCenter:(ANCSNotificationCenter *)notificationCenter;
 - (void)getAttributesForNotification:(ANCSNotification *)notification detailsMask:(ANCSNotificationDetailsTypeMask)mask notificationCenter:(ANCSNotificationCenter *)notificationCenter;
-- (void)getApplicationNameForIdentifier:(NSString *)identifier;
+- (void)getApplicationNameForIdentifier:(NSString *)identifier onNotificationCenter:(ANCSNotificationCenter *)notificationCenter;
 
 @property (nonatomic, readonly, getter = isScanning) BOOL scanning;
 
@@ -71,6 +71,8 @@ typedef NS_ENUM(uint8_t, ANCSAppAttributeType)
 - (void)controller:(ANCSController *)controller failedToConnectToNotificationCenter:(ANCSNotificationCenter *)notificationCenter error:(NSError *)error;
 - (void)controller:(ANCSController *)controller disconnectedFromNotificationCenter:(ANCSNotificationCenter *)notificationCenter;
 - (void)controller:(ANCSController *)controller receivedNotification:(ANCSNotification *)notification notificationCenter:(ANCSNotificationCenter *)notificationCenter;
-- (void)controller:(ANCSController *)controller didUpdateNotificationDetails:(ANCSNotificationDetails *)notificationDetails notification:(ANCSNotification *)notification notificationCenter:(ANCSNotificationCenter *)notificationCenter;
+- (void)controller:(ANCSController *)controller didUpdateNotificationDetails:(ANCSNotificationDetails *)notificationDetails notificationCenter:(ANCSNotificationCenter *)notificationCenter;
+
+- (void)controller:(ANCSController *)controller didRetrieveAppDisplayName:(NSString *)displayName forIdentifier:(NSString *)identifier;
 
 @end

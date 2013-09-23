@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "ANCSController.h"
 
-@interface ANCSNotificationDetailTuple : NSObject
+@interface ANCSDetailTuple : NSObject
 
-@property (nonatomic, assign) ANCSNotificationAttributeType attributeType;
+@property (nonatomic, assign) uint8_t attributeIdentifier;
 @property (nonatomic, assign) uint16_t length;
 @property (nonatomic, readonly, getter = isComplete) BOOL complete;
 @property (nonatomic, readonly) NSString *value;

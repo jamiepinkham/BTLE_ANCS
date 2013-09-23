@@ -10,6 +10,7 @@
 #import "ANCSController.h"
 #import "ANCSNotificationCenter.h"
 #import "ANCSNotification.h"
+#import "ANCSNotificationDetails.h"
 
 @interface JPANCSAppDelegate () <ANCSControllerDelegate>
 
@@ -59,13 +60,20 @@
 	}
 	else
 	{
+		NSLog(@"added notification = %@", notification);
 		[controller getAttributesForNotification:notification detailsMask:ANCSNotificationDetailsTypeMaskAll notificationCenter:notificationCenter];
 	}
 }
 
-- (void)controller:(ANCSController *)controller didUpdateNotificationDetails:(ANCSNotificationDetails *)notificationDetails notification:(ANCSNotification *)notification notificationCenter:(ANCSNotificationCenter *)notificationCenter
+- (void)controller:(ANCSController *)controller didUpdateNotificationDetails:(ANCSNotificationDetails *)notificationDetails notificationCenter:(ANCSNotificationCenter *)notificationCenter
 {
 	NSLog(@"updated details = %@", notificationDetails);
+	[controller getApplicationNameForIdentifier:notificationDetails.appIdentifier onNotificationCenter:notificationCenter];
+}
+
+- (void)controller:(ANCSController *)controller didRetrieveAppDisplayName:(NSString *)displayName forIdentifier:(NSString *)identifier
+{
+	
 }
 
 

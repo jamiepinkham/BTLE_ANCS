@@ -8,18 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import "ANCSController.h"
+#import  "ANCSTransaction.h"
 
-@interface ANCSNotificationDetailTransaction : NSObject
+@interface ANCSNotificationDetailTransaction : ANCSTransaction
 
 - (instancetype)initWithNotification:(ANCSNotification *)note detailsMask:(ANCSNotificationDetailsTypeMask)mask;
-
-@property (nonatomic, readonly) ANCSNotification *notification;
-@property (nonatomic, readonly, getter = isComplete) BOOL complete;
-
-- (NSData *)buildCommandData;
-
-- (void)appendData:(NSData *)data;
-
-- (ANCSNotificationDetails *)buildDetails;
 
 @end

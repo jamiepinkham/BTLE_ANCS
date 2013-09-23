@@ -11,6 +11,7 @@
 #import "ANCSNotification.h"
 #import "ANCSNotificationDetails.h"
 #import "ANCSNotificationDetailTransaction.h"
+#import "ANCSAppNameTransaction.h"
 
 static NSString * const kANCSServiceUUIDString = @"7905F431-B5CE-4E99-A40F-4B1E122D00D0";
 static NSString * const kANCSNotificationSourceUUIDString = @"9FBF120D-6301-42D9-8C58-25E699A21DBD";
@@ -35,7 +36,11 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 
 @property (nonatomic, strong) NSMutableDictionary *notifications;
 
-@property (nonatomic, strong) ANCSNotificationDetailTransaction *currentTransaction;
+@property (nonatomic, strong) NSMutableDictionary *appIdentifiers;
+
+@property (nonatomic, strong) ANCSTransaction *currentTransaction;
+@property (nonatomic, strong) dispatch_semaphore_t transactionSemaphore;
+@property (nonatomic, strong) dispatch_queue_t transactionQueue;
 
 @end
 
@@ -59,6 +64,10 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 		_ncsToPeripheral = [NSMutableDictionary new];
 		_peripheralsToNcs = [NSMutableDictionary new];
 		_notifications = [NSMutableDictionary new];
+		
+		_transactionSemaphore = dispatch_semaphore_create(0);
+		_transactionQueue = dispatch_queue_create("com.jamiepinkham.ancs_transaction_queue", NULL);
+		
 
 		
 	}
@@ -88,16 +97,48 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	ANCSNotification *localNote = [self.notifications objectForKey:@([notification eventId])];
 	if(localNote)
 	{
-		self.currentTransaction = [[ANCSNotificationDetailTransaction alloc] initWithNotification:localNote detailsMask:mask];
-		NSData *packet = [self.currentTransaction buildCommandData];
-		CBPeripheral *peripheral = [self.ncsToPeripheral objectForKey:notificationCenter];
-		[peripheral writeValue:packet forCharacteristic:self.controlPointCharacteristic type:CBCharacteristicWriteWithResponse];
+		ANCSTransaction *transaction = [[ANCSNotificationDetailTransaction alloc] initWithNotification:localNote detailsMask:mask];
+		CBPeripheral *peripheral = self.ncsToPeripheral[notificationCenter];
+		[self executeTransaction:transaction onPeripheral:peripheral completionBlock:^{
+			ANCSNotificationDetails *details = [self.currentTransaction result];
+			self.currentTransaction = nil;
+			dispatch_async(self.callbackQueue, ^{
+				[self.delegate controller:self didUpdateNotificationDetails:details notificationCenter:notificationCenter];
+				
+			});
+		}];
+		
 	}
 }
 
-- (void)getApplicationNameForIdentifier:(NSString *)identifier
+- (void)getApplicationNameForIdentifier:(NSString *)identifier onNotificationCenter:(ANCSNotificationCenter *)notificationCenter
 {
-	
+	if(identifier == nil)
+	{
+		return;
+	}
+	if ([self.appIdentifiers objectForKey:identifier])
+	{
+		dispatch_async(self.callbackQueue, ^{
+			NSString *displayName = [self.appIdentifiers objectForKey:identifier];
+			[self.delegate controller:self didRetrieveAppDisplayName:displayName forIdentifier:identifier];
+		});
+	}
+	else
+	{
+		//currently broken, see: https://devforums.apple.com/message/876984#876984
+		/*
+		 ANCSAppNameTransaction *transaction = [[ANCSAppNameTransaction alloc] initWithAppIdentifier:identifier];
+		CBPeripheral *peripheral = self.ncsToPeripheral[notificationCenter];
+		[self executeTransaction:transaction onPeripheral:peripheral completionBlock:^{
+			NSString *appName = [transaction result];
+			self.appIdentifiers[identifier] = appName;
+			dispatch_async(self.callbackQueue, ^{
+				[self.delegate controller:self didRetrieveAppDisplayName:appName forIdentifier:identifier];
+			});
+		}];
+		 */
+	}
 }
 
 
@@ -239,17 +280,10 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	if([characteristic.UUID isEqual:self.dataSourceUUID])
 	{
 		[self.currentTransaction appendData:characteristic.value];
+		NSLog(@"appended data = %@", characteristic.value);
 		if([self.currentTransaction isComplete])
 		{
-			ANCSNotification *notification = [self.notifications objectForKey:@(self.currentTransaction.notification.eventId)];
-			ANCSNotificationDetails *details = [self.currentTransaction buildDetails];
-			
-			dispatch_async(self.callbackQueue, ^{
-				ANCSNotificationCenter *center = self.peripheralsToNcs[CFBridgingRelease(CFUUIDCreateString(NULL, peripheral.UUID))];
-				[self.delegate controller:self didUpdateNotificationDetails:details notification:notification notificationCenter:center];
-			});
-
-			
+			dispatch_semaphore_signal(self.transactionSemaphore);
 		}
 	}
 }
@@ -257,6 +291,17 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
 	NSLog(@"wrote to characteristic = %@, error = %@", characteristic, error);
+}
+
+- (void)executeTransaction:(ANCSTransaction *)transaction onPeripheral:(CBPeripheral *)peripheral completionBlock:(void(^)(void))completionBlock
+{
+	dispatch_async(self.transactionQueue, ^{
+		self.currentTransaction = transaction;
+		NSData *packet = [transaction buildCommandData];
+		[peripheral writeValue:packet forCharacteristic:self.controlPointCharacteristic type:CBCharacteristicWriteWithResponse];
+		dispatch_semaphore_wait(self.transactionSemaphore, DISPATCH_TIME_FOREVER);
+		completionBlock();
+	});
 }
 
 

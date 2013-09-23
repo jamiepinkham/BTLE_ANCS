@@ -46,4 +46,16 @@
 	return self.eventId;
 }
 
+- (NSString *)description
+{
+	NSMutableString *ret = [[NSMutableString alloc] init];
+	[ret appendFormat:@"{\n\t eventId : %lu",self.eventId];
+	[ret appendFormat:@"\n\t categoryCount : %lu", self.categoryCount];
+	[ret appendFormat:@"\n\t notificationType : %lu", self.notificationType];
+	[ret appendFormat:@"\n\t eventFlags : %lu", self.eventFlags];
+	[ret appendFormat:@"\n\t category : %lu", self.category];
+	[ret appendFormat:@"\n}"];
+	return ret;
+}
+
 @end

@@ -6,17 +6,17 @@
 //  Copyright (c) 2013 Jamie Pinkham. All rights reserved.
 //
 
-#import "ANCSNotificationDetailTuple.h"
+#import "ANCSDetailTuple.h"
 
 #define HEADER_SIZE 3
 
-@interface ANCSNotificationDetailTuple ()
+@interface ANCSDetailTuple ()
 
 @property (nonatomic, strong) NSMutableData *data;
 
 @end
 
-@implementation ANCSNotificationDetailTuple
+@implementation ANCSDetailTuple
 
 - (instancetype)init
 {

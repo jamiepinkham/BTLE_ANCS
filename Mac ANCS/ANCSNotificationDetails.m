@@ -15,6 +15,7 @@
 {
 	NSMutableString *ret = [[NSMutableString alloc] init];
 	[ret appendFormat:@"{\n\t appIdentifier : %@",self.appIdentifier];
+	[ret appendFormat:@"\n\t notificationId : %hu", self.notificationId];
 	[ret appendFormat:@"\n\t title : %@", self.title];
 	[ret appendFormat:@"\n\t subtitle : %@", self.subtitle];
 	[ret appendFormat:@"\n\t message : %@", self.message];
