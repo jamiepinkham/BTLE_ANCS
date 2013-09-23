@@ -40,6 +40,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 
 @property (nonatomic, strong) ANCSTransaction *currentTransaction;
 @property (nonatomic, strong) dispatch_semaphore_t transactionSemaphore;
+@property (nonatomic, strong) dispatch_semaphore_t timeoutSemaphore;
 @property (nonatomic, strong) dispatch_queue_t transactionQueue;
 
 @end
@@ -65,10 +66,10 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 		_peripheralsToNcs = [NSMutableDictionary new];
 		_notifications = [NSMutableDictionary new];
 		
-		_transactionSemaphore = dispatch_semaphore_create(0);
-		_transactionQueue = dispatch_queue_create("com.jamiepinkham.ancs_transaction_queue", NULL);
+		_transactionSemaphore = dispatch_semaphore_create(1);
+		_transactionQueue = dispatch_queue_create("com.jamiepinkham.ancs_transaction_queue", DISPATCH_QUEUE_SERIAL);
 		
-
+		_timeoutSemaphore = dispatch_semaphore_create(0);
 		
 	}
 	return self;
@@ -94,6 +95,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 
 - (void)getAttributesForNotification:(ANCSNotification *)notification detailsMask:(ANCSNotificationDetailsTypeMask)mask notificationCenter:(ANCSNotificationCenter *)notificationCenter
 {
+	NSLog(@"%@",NSStringFromSelector(_cmd));
 	ANCSNotification *localNote = [self.notifications objectForKey:@([notification eventId])];
 	if(localNote)
 	{
@@ -118,6 +120,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 
 - (void)getApplicationNameForIdentifier:(NSString *)identifier onNotificationCenter:(ANCSNotificationCenter *)notificationCenter
 {
+	NSLog(@"%@",NSStringFromSelector(_cmd));
 	if(identifier == nil)
 	{
 		return;
@@ -292,7 +295,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 		[self.currentTransaction appendData:characteristic.value];
 		if([self.currentTransaction isComplete])
 		{
-			dispatch_semaphore_signal(self.transactionSemaphore);
+			dispatch_semaphore_signal(self.timeoutSemaphore);
 		}
 	}
 }
@@ -301,6 +304,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 - (void)executeTransaction:(ANCSTransaction *)transaction onNotificationCenter:(ANCSNotificationCenter *)notificationCenter;
 {
 	dispatch_async(self.transactionQueue, ^{
+		dispatch_semaphore_wait(self.transactionSemaphore, DISPATCH_TIME_FOREVER);
 		CBPeripheral *peripheral = self.ncsToPeripheral[notificationCenter];
 		self.currentTransaction = transaction;
 		NSData *packet = [transaction buildCommandData];
@@ -309,9 +313,15 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 		//THE TIMEOUT EXISTS BECAUSE OF THE FACT THAT THE GET APP NAME COMMAND IS BROKEN AS OF 9/23/12
 		double timeoutInSeconds = 10.0;
 		dispatch_time_t timeout = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeoutInSeconds * NSEC_PER_SEC));
-		dispatch_semaphore_wait(self.transactionSemaphore, timeout);
+		dispatch_semaphore_wait(self.timeoutSemaphore, timeout);
+		
 		transaction.completionBlock([transaction result], [transaction error]);
 		self.currentTransaction = nil;
+		
+//		if(![transaction isComplete])
+//		{
+		dispatch_semaphore_signal(self.transactionSemaphore);
+//		}
 	});
 }
 
