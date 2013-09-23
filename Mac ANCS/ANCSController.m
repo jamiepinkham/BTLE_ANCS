@@ -98,15 +98,20 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	if(localNote)
 	{
 		ANCSTransaction *transaction = [[ANCSNotificationDetailTransaction alloc] initWithNotification:localNote detailsMask:mask];
-		CBPeripheral *peripheral = self.ncsToPeripheral[notificationCenter];
-		[self executeTransaction:transaction onPeripheral:peripheral completionBlock:^{
-			ANCSNotificationDetails *details = [self.currentTransaction result];
-			self.currentTransaction = nil;
-			dispatch_async(self.callbackQueue, ^{
-				[self.delegate controller:self didUpdateNotificationDetails:details notificationCenter:notificationCenter];
-				
-			});
-		}];
+		transaction.completionBlock = ^(id result, NSError *error){
+			if(result)
+			{
+				dispatch_async(self.callbackQueue, ^{
+					[self.delegate controller:self didUpdateNotificationDetails:result notificationCenter:notificationCenter];
+					
+				});
+			}
+			else
+			{
+				NSLog(@"retrive notification error = %@", error);
+			}
+		};
+		[self executeTransaction:transaction onNotificationCenter:notificationCenter];
 		
 	}
 }
@@ -127,17 +132,23 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	else
 	{
 		//currently broken, see: https://devforums.apple.com/message/876984#876984
-		/*
 		 ANCSAppNameTransaction *transaction = [[ANCSAppNameTransaction alloc] initWithAppIdentifier:identifier];
-		CBPeripheral *peripheral = self.ncsToPeripheral[notificationCenter];
-		[self executeTransaction:transaction onPeripheral:peripheral completionBlock:^{
-			NSString *appName = [transaction result];
-			self.appIdentifiers[identifier] = appName;
-			dispatch_async(self.callbackQueue, ^{
-				[self.delegate controller:self didRetrieveAppDisplayName:appName forIdentifier:identifier];
-			});
-		}];
-		 */
+		transaction.completionBlock = ^(id result, NSError *error){
+			if(result)
+			{
+				self.appIdentifiers[identifier] = result;
+				dispatch_async(self.callbackQueue, ^{
+					[self.delegate controller:self didRetrieveAppDisplayName:result forIdentifier:identifier];
+				});
+			}
+			else
+			{
+				NSLog(@"retrive app name error = %@", error);
+			}
+			
+		};
+
+		[self executeTransaction:transaction onNotificationCenter:notificationCenter];
 	}
 }
 
@@ -159,12 +170,6 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	dispatch_async(self.callbackQueue, ^{
 		[self.delegate controllerStartedScanningForNotificationCenters:self];
 	});
-	[self.centralManager retrieveConnectedPeripherals];
-}
-
-- (void)centralManager:(CBCentralManager *)central didRetrieveConnectedPeripherals:(NSArray *)peripherals
-{
-	NSLog(@"peripherals = %@", peripherals);
 }
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
@@ -256,6 +261,11 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	{
 		NSLog(@"data source characteristic is notifying = %@", characteristic.isNotifying ? @"YES" : @"NO");
 	}
+	
+	if(!([self.notificationSourceCharacterstic isNotifying] && [self.dataSourceCharacteristic isNotifying]))
+	{
+		NSLog(@"lost comms with ANCS");
+	}
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
@@ -280,7 +290,6 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	if([characteristic.UUID isEqual:self.dataSourceUUID])
 	{
 		[self.currentTransaction appendData:characteristic.value];
-		NSLog(@"appended data = %@", characteristic.value);
 		if([self.currentTransaction isComplete])
 		{
 			dispatch_semaphore_signal(self.transactionSemaphore);
@@ -288,19 +297,21 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	}
 }
 
-- (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
-{
-	NSLog(@"wrote to characteristic = %@, error = %@", characteristic, error);
-}
 
-- (void)executeTransaction:(ANCSTransaction *)transaction onPeripheral:(CBPeripheral *)peripheral completionBlock:(void(^)(void))completionBlock
+- (void)executeTransaction:(ANCSTransaction *)transaction onNotificationCenter:(ANCSNotificationCenter *)notificationCenter;
 {
 	dispatch_async(self.transactionQueue, ^{
+		CBPeripheral *peripheral = self.ncsToPeripheral[notificationCenter];
 		self.currentTransaction = transaction;
 		NSData *packet = [transaction buildCommandData];
 		[peripheral writeValue:packet forCharacteristic:self.controlPointCharacteristic type:CBCharacteristicWriteWithResponse];
-		dispatch_semaphore_wait(self.transactionSemaphore, DISPATCH_TIME_FOREVER);
-		completionBlock();
+		
+		//THE TIMEOUT EXISTS BECAUSE OF THE FACT THAT THE GET APP NAME COMMAND IS BROKEN AS OF 9/23/12
+		double timeoutInSeconds = 10.0;
+		dispatch_time_t timeout = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeoutInSeconds * NSEC_PER_SEC));
+		dispatch_semaphore_wait(self.transactionSemaphore, timeout);
+		transaction.completionBlock([transaction result], [transaction error]);
+		self.currentTransaction = nil;
 	});
 }
 

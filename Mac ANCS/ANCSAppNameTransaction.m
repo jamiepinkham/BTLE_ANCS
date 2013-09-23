@@ -7,7 +7,7 @@
 //
 
 #import "ANCSAppNameTransaction.h"
-
+#import "ANCSDetailTuple.h"
 
 static uint8_t const kANCSCommandIDGetAppName = 0x1;
 static uint8_t const kANCSAppAttributeIDDisplayName = 0x0;
@@ -15,7 +15,7 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 
 @interface ANCSAppNameTransaction ()
 {
-	NSInteger headerSize;
+	NSDictionary *_tuples;
 }
 
 @property (nonatomic, copy) NSString *appIdentifier;
@@ -30,9 +30,22 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 	if(self)
 	{
 		_appIdentifier = appIdentifier;
-		headerSize = [appIdentifier lengthOfBytesUsingEncoding:NSUTF8StringEncoding] + 2;
 	}
 	return self;
+}
+
+- (NSInteger)headerLength
+{
+	return [self.appIdentifier lengthOfBytesUsingEncoding:NSUTF8StringEncoding] + 2;
+}
+
+-(NSDictionary *)tuples
+{
+	if(_tuples == nil)
+	{
+		_tuples =  [self buildTuples];
+	}
+	return _tuples;
 }
 
 - (NSData *)buildCommandData
@@ -47,30 +60,36 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 	return ret;
 }
 
-- (BOOL)isComplete
-{
-	return [self.transactionData length] == [self expectedLength];
-}
-
 - (NSInteger)expectedLength
 {
 	if(self.transactionData == nil)
 	{
 		return UINT16_MAX;
 	}
-	if(self.transactionData.length < headerSize)
+	if(self.transactionData.length < self.headerLength)
 	{
 		return UINT16_MAX;
 	}
 	uint16_t ret;
 	[self.transactionData getBytes:&ret range:NSMakeRange(sizeof(uint8_t), sizeof(uint16_t))];
-	return CFSwapInt16LittleToHost(ret) + headerSize;
+	return CFSwapInt16LittleToHost(ret) + self.headerLength;
 }
 
 - (id)result
 {
-	NSData *data = [self.transactionData subdataWithRange:NSMakeRange(headerSize, [self.transactionData length] - headerSize)];
-	return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+	if(self.complete)
+	{
+		NSData *data = [self.transactionData subdataWithRange:NSMakeRange(self.headerLength, [self.transactionData length] - self.headerLength)];
+		return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+	}
+	return nil;
+}
+
+- (NSDictionary *)buildTuples
+{
+	ANCSDetailTuple *tuple = [[ANCSDetailTuple alloc] init];
+	tuple.attributeIdentifier = kANCSAppAttributeIDDisplayName;
+	return @{@(kANCSAppAttributeIDDisplayName) : tuple };
 }
 
 @end

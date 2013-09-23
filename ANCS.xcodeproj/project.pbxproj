@@ -88,7 +88,6 @@
 		502E632417EFF7FC00B0478C /* ANCS iOSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ANCS iOSTests-Info.plist"; sourceTree = "<group>"; };
 		502E632617EFF7FC00B0478C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		502E632817EFF7FC00B0478C /* ANCS_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ANCS_iOSTests.m; sourceTree = "<group>"; };
-		502E633F17EFF88200B0478C /* ANCS iOSTests copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ANCS iOSTests copy-Info.plist"; path = "/Users/jamie.pinkham/Documents/Projects/Mac ANCS/ANCS iOSTests copy-Info.plist"; sourceTree = "<absolute>"; };
 		502E634017EFF89700B0478C /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreBluetooth.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
@@ -125,7 +124,6 @@
 				502E632217EFF7FC00B0478C /* ANCS iOSTests */,
 				502E62AA17ED20E900B0478C /* Frameworks */,
 				502E62A917ED20E900B0478C /* Products */,
-				502E633F17EFF88200B0478C /* ANCS iOSTests copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -619,6 +617,7 @@
 				502E632C17EFF7FC00B0478C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

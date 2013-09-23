@@ -13,10 +13,13 @@
 
 static uint8_t const kANCSCommandIDGetNotificationAttributes = 0x0;
 static uint16_t const kANCSAttributeMaxLength = 0xffff;
-@interface ANCSNotificationDetailTransaction ()
+#define HEADER_SIZE 5
 
-@property (nonatomic, strong) NSDictionary *tuples;
-@property (nonatomic, assign) ANCSDetailTuple *currentTuple;
+@interface ANCSNotificationDetailTransaction ()
+{
+	NSDictionary *_tuples;
+}
+
 @property (nonatomic, assign) ANCSNotificationDetailsTypeMask mask;
 @property (nonatomic, readonly) ANCSNotification *notification;
 
@@ -31,7 +34,6 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 	{
 		_notification = note;
 		_mask = mask;
-		
 	}
 	return self;
 }
@@ -40,12 +42,17 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 {
 	if(_tuples == nil)
 	{
-		_tuples = [self buildTuples:self.mask];
+		_tuples =  [self buildTuples:self.mask];
 	}
 	return _tuples;
 }
 
 #pragma mark - overrides
+
+- (NSInteger)headerLength
+{
+	return HEADER_SIZE;
+}
 
 - (NSData *)buildCommandData
 {
@@ -72,89 +79,49 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 	return [data copy];
 }
 
-- (void)appendData:(NSData *)data
-{
-	[super appendData:data];
-	if(!self.complete)
-	{
-		if([self.transactionData length] < 6)
-		{
-			return;
-		}
-		if(self.currentTuple == nil)
-		{
-			ANCSNotificationAttributeType type;
-			[self.transactionData getBytes:&type range:NSMakeRange(5, 1)];
-			self.currentTuple = self.tuples[@(type)];
-			data = [data subdataWithRange:NSMakeRange(5, [self.transactionData length] - 5)];
-		}
-		NSData *leftOver = [[self currentTuple] appendData:data];
-		while(leftOver != nil)
-		{
-			ANCSNotificationAttributeType nextType;
-			[leftOver getBytes:&nextType length:sizeof(ANCSNotificationAttributeType)];
-			self.currentTuple = self.tuples[@(nextType)];
-			leftOver = [[self currentTuple] appendData:leftOver];
-		}
-	}
-}
-
--(BOOL)isComplete
-{
-	if([self.transactionData length] < 6)
-	{
-		return NO;
-	}
-	__block BOOL complete = YES;
-	[[self.tuples allValues] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		ANCSDetailTuple *tuple = (ANCSDetailTuple *)obj;
-		complete = [tuple isComplete];
-		if(!complete)
-		{
-			*stop = YES;
-		}
-	}];
-	return complete;
-}
 
 - (id)result
 {
-	ANCSNotificationDetails *detail = [[ANCSNotificationDetails alloc] init];
-	uint32_t notificationId;
-	[self.transactionData getBytes:&notificationId range:NSMakeRange(1, sizeof(uint32_t))];
-	detail.notificationId = CFSwapInt32LittleToHost(notificationId);
-	NSArray *allTuples = [self orderedTuples];
-	for (ANCSDetailTuple *tuple in allTuples)
+	if(self.complete)
 	{
-		switch (tuple.attributeIdentifier) {
-			case ANCSNotificationAttributeTypeMessage:
-				detail.message = [tuple value];
-				break;
-			case ANCSNotificationAttributeTypeAppIdentifier:
-				detail.appIdentifier = [tuple value];
-				break;
-			case ANCSNotificationAttributeTypeDate:
-			{
-				NSString *dateString = [tuple value];
-				NSDate *date = [self.dateFormatter dateFromString:dateString];
-				detail.date = date;
+		ANCSNotificationDetails *detail = [[ANCSNotificationDetails alloc] init];
+		uint32_t notificationId;
+		[self.transactionData getBytes:&notificationId range:NSMakeRange(1, sizeof(uint32_t))];
+		detail.notificationId = CFSwapInt32LittleToHost(notificationId);
+		NSArray *allTuples = [self orderedTuples];
+		for (ANCSDetailTuple *tuple in allTuples)
+		{
+			switch (tuple.attributeIdentifier) {
+				case ANCSNotificationAttributeTypeMessage:
+					detail.message = [tuple value];
+					break;
+				case ANCSNotificationAttributeTypeAppIdentifier:
+					detail.appIdentifier = [tuple value];
+					break;
+				case ANCSNotificationAttributeTypeDate:
+				{
+					NSString *dateString = [tuple value];
+					NSDate *date = [self.dateFormatter dateFromString:dateString];
+					detail.date = date;
+				}
+					break;
+				case ANCSNotificationAttributeTypeMessageSize:
+					detail.messageSize = [tuple value];
+					break;
+				case ANCSNotificationAttributeTypeSubtitle:
+					detail.subtitle = [tuple value];
+					break;
+				case ANCSNotificationAttributeTypeTitle:
+					detail.title = [tuple value];
+					break;
+				default:
+					break;
 			}
-				break;
-			case ANCSNotificationAttributeTypeMessageSize:
-				detail.messageSize = [tuple value];
-				break;
-			case ANCSNotificationAttributeTypeSubtitle:
-				detail.subtitle = [tuple value];
-				break;
-			case ANCSNotificationAttributeTypeTitle:
-				detail.title = [tuple value];
-				break;
-			default:
-				break;
 		}
+		
+		return detail;
 	}
-	
-	return detail;
+	return nil;
 }
 
 #pragma mark - helpers
