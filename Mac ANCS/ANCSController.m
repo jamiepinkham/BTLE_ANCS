@@ -265,10 +265,6 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 		NSLog(@"data source characteristic is notifying = %@", characteristic.isNotifying ? @"YES" : @"NO");
 	}
 	
-	if(!([self.notificationSourceCharacterstic isNotifying] && [self.dataSourceCharacteristic isNotifying]))
-	{
-		NSLog(@"lost comms with ANCS");
-	}
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
@@ -318,10 +314,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 		transaction.completionBlock([transaction result], [transaction error]);
 		self.currentTransaction = nil;
 		
-//		if(![transaction isComplete])
-//		{
 		dispatch_semaphore_signal(self.transactionSemaphore);
-//		}
 	});
 }
 
