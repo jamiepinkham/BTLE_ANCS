@@ -20,6 +20,9 @@ typedef NS_OPTIONS(NSUInteger, ANCSEventFlag)
 {
 	ANCSEventFlagSilent = (1 << 0),
 	ANCSEventFlagImportant = ( 1 << 1),
+    ANCSEventFlagPreExisting  = ( 1 << 2),
+    ANCSEventFlagPositiveAction  = ( 1 << 3),
+    ANCSEventFlagNegativeAction = ( 1 << 4),
 };
 
 typedef NS_ENUM(NSInteger, ANCSCategory)
@@ -38,11 +41,24 @@ typedef NS_ENUM(NSInteger, ANCSCategory)
 	ANCSCategoryEntertainment,
 };
 
+typedef NS_ENUM(NSInteger, ANCSCommandId)
+{
+    ANCSCommandIDGetNotificationAttributes = 0,
+    ANCSCommandIDGetAppAttributes = 1,
+    ANCSCommandIDPerformNotificationAction  = 2,
+};
+
+typedef NS_ENUM(NSInteger, ANCSActionId)
+{
+    ANCSActionIdPositive = 0,
+    ANCSActionIdNegative = 1,
+};
+
 @interface ANCSNotification : NSObject
 
 - (instancetype)initWithData:(NSData *)data;
 
-@property (nonatomic, readonly) NSInteger eventId;
+@property (nonatomic, readonly) NSInteger notificationUid;
 @property (nonatomic, readonly) NSInteger categoryCount;
 @property (nonatomic, readonly) ANCSEventNotificationType notificationType;
 @property (nonatomic, readonly) ANCSEventFlag eventFlags;

@@ -18,12 +18,16 @@ typedef NS_OPTIONS(NSInteger, ANCSNotificationDetailsTypeMask)
 	ANCSNotificationDetailsTypeMaskMessage			=	(1 << 3),
 	ANCSNotificationDetailsTypeMaskMessageSize		=	(1 << 4),
 	ANCSNotificationDetailsTypeMaskDate				=	(1 << 5),
+    ANCSNotificationDetailsTypeMaskPositiveActionLabel				=	(1 << 6),
+    ANCSNotificationDetailsTypeMaskNegativeActionLabel				=	(1 << 7),
 	ANCSNotificationDetailsTypeMaskAll				=	ANCSNotificationDetailsTypeMaskAppIdentifier |
 														ANCSNotificationDetailsTypeMaskTitle |
 														ANCSNotificationDetailsTypeMaskSubtitle |
 														ANCSNotificationDetailsTypeMaskMessage |
 														ANCSNotificationDetailsTypeMaskMessageSize |
-														ANCSNotificationDetailsTypeMaskDate,
+                                                        ANCSNotificationDetailsTypeMaskDate |
+                                                        ANCSNotificationDetailsTypeMaskPositiveActionLabel |
+														ANCSNotificationDetailsTypeMaskNegativeActionLabel,
 };
 
 typedef NS_ENUM(uint8_t, ANCSNotificationAttributeType)
@@ -34,7 +38,9 @@ typedef NS_ENUM(uint8_t, ANCSNotificationAttributeType)
 	ANCSNotificationAttributeTypeMessage = 3,
 	ANCSNotificationAttributeTypeMessageSize = 4,
 	ANCSNotificationAttributeTypeDate = 5,
-	ANCSNotificationAttributeTypeReserved = 6,
+    ANCSNotificationAttributeTypePositiveActionLabel = 6,
+    ANCSNotificationAttributeTypeNegativeActionLabel = 7,
+	ANCSNotificationAttributeTypeReserved = 8,
 };
 
 typedef NS_ENUM(uint8_t, ANCSAppAttributeType)

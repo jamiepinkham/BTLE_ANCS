@@ -18,5 +18,7 @@
 @property (nonatomic, copy) NSString *message;
 @property (nonatomic, copy) NSString *messageSize;
 @property (nonatomic, copy) NSDate *date;
+@property (nonatomic, copy) NSString *positionActionLabel;
+@property (nonatomic, copy) NSString *negativeActionLabel;
 
 @end

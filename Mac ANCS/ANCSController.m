@@ -96,7 +96,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 - (void)getAttributesForNotification:(ANCSNotification *)notification detailsMask:(ANCSNotificationDetailsTypeMask)mask notificationCenter:(ANCSNotificationCenter *)notificationCenter
 {
 	NSLog(@"%@",NSStringFromSelector(_cmd));
-	ANCSNotification *localNote = [self.notifications objectForKey:@([notification eventId])];
+	ANCSNotification *localNote = [self.notifications objectForKey:@([notification notificationUid])];
 	if(localNote)
 	{
 		ANCSTransaction *transaction = [[ANCSNotificationDetailTransaction alloc] initWithNotification:localNote detailsMask:mask];
@@ -232,37 +232,37 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
 {
-	if([service.UUID isEqual:self.serviceUUID])
+	if([service.UUID isEqual:self.serviceUUID]) // 确实是ANCS服务
 	{
 		for(CBCharacteristic *aChar in service.characteristics)
 		{
-			if([aChar.UUID isEqual:self.notificationSourceUUID])
+			if ([aChar.UUID isEqual:self.notificationSourceUUID]) // 通知源
 			{
-				self.notificationSourceCharacterstic = aChar;
-				[peripheral setNotifyValue:YES forCharacteristic:aChar];
-			}
-			else if ([aChar.UUID isEqual:self.controlPointUUID])
-			{
+                self.notificationSourceCharacterstic = aChar;
+            }
+            else if ([aChar.UUID isEqual:self.controlPointUUID]) // 操作
+            {
 				self.controlPointCharacteristic = aChar;
 			}
-			else if([aChar.UUID isEqual:self.dataSourceUUID])
+			else if([aChar.UUID isEqual:self.dataSourceUUID]) // 数据源
 			{
 				self.dataSourceCharacteristic = aChar;
-				[peripheral setNotifyValue:YES forCharacteristic:aChar];
 			}
 		}
-	}
+        [peripheral setNotifyValue:YES forCharacteristic:self.dataSourceCharacteristic];
+        [peripheral setNotifyValue:YES forCharacteristic:self.notificationSourceCharacterstic];
+    }
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
 	if([characteristic.UUID isEqual:self.notificationSourceUUID])
 	{
-		NSLog(@"notification source characteristic is notifying = %@", characteristic.isNotifying ? @"YES" : @"NO");
+//		NSLog(@"notification source characteristic is notifying = %@, %@", characteristic.isNotifying ? @"YES" : @"NO", error);
 	}
-	if([characteristic.UUID isEqual:self.dataSourceUUID])
+	else if([characteristic.UUID isEqual:self.dataSourceUUID])
 	{
-		NSLog(@"data source characteristic is notifying = %@", characteristic.isNotifying ? @"YES" : @"NO");
+//		NSLog(@"data source characteristic is notifying = %@, %@", characteristic.isNotifying ? @"YES" : @"NO", error);
 	}
 	
 }
@@ -273,13 +273,13 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	{
 		ANCSNotification *notification = [[ANCSNotification alloc] initWithData:characteristic.value];
 		
-		if(![self.notifications objectForKey:@([notification eventId])] && (notification.notificationType != ANCSEventNotificationTypeRemoved))
+		if(![self.notifications objectForKey:@([notification notificationUid])] && (notification.notificationType != ANCSEventNotificationTypeRemoved))
 		{
-			[self.notifications setObject:notification forKey:@(notification.eventId)];
+			[self.notifications setObject:notification forKey:@(notification.notificationUid)];
 		}
-		else if([self.notifications objectForKey:@([notification eventId])] && (notification.notificationType == ANCSEventNotificationTypeRemoved))
+		else if([self.notifications objectForKey:@([notification notificationUid])] && (notification.notificationType == ANCSEventNotificationTypeRemoved))
 		{
-			[self.notifications removeObjectForKey:@([notification eventId])];
+			[self.notifications removeObjectForKey:@([notification notificationUid])];
 		}
 		dispatch_async(self.callbackQueue, ^{
 			ANCSNotificationCenter *center = self.peripheralsToNcs[CFBridgingRelease(CFUUIDCreateString(NULL, peripheral.UUID))];

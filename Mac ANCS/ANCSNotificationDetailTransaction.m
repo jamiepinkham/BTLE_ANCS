@@ -60,7 +60,7 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 	
 	[data appendBytes:&kANCSCommandIDGetNotificationAttributes length:sizeof(kANCSCommandIDGetNotificationAttributes)];
 
-	uint32_t notificationId = (uint32_t)[self.notification eventId];
+	uint32_t notificationId = (uint32_t)[self.notification notificationUid];
 	notificationId = CFSwapInt32HostToLittle(notificationId);
 	[data appendBytes:&notificationId length:sizeof(notificationId)];
 	
@@ -114,6 +114,12 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 				case ANCSNotificationAttributeTypeTitle:
 					detail.title = [tuple value];
 					break;
+                case ANCSNotificationAttributeTypePositiveActionLabel:
+                    detail.positionActionLabel = [tuple value];
+                    break;
+                case ANCSNotificationAttributeTypeNegativeActionLabel:
+                    detail.negativeActionLabel = [tuple value];
+                    break;
 				default:
 					break;
 			}

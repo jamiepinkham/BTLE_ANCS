@@ -21,6 +21,8 @@
 	[ret appendFormat:@"\n\t message : %@", self.message];
 	[ret appendFormat:@"\n\t messageSize : %@", self.messageSize];
 	[ret appendFormat:@"\n\t date : %@", self.date];
+    [ret appendFormat:@"\n\t positionAction : %@", self.positionActionLabel];
+    [ret appendFormat:@"\n\t negativeAction : %@", self.negativeActionLabel];
 	[ret appendFormat:@"\n}"];
 	return ret;
 }
