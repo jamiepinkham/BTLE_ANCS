@@ -13,10 +13,10 @@
 #import "ANCSNotificationDetailTransaction.h"
 #import "ANCSAppNameTransaction.h"
 
-static NSString * const kANCSServiceUUIDString = @"7905F431-B5CE-4E99-A40F-4B1E122D00D0";
-static NSString * const kANCSNotificationSourceUUIDString = @"9FBF120D-6301-42D9-8C58-25E699A21DBD";
-static NSString * const kANCSControlPointUUIDString = @"69D1D8F3-45E1-49A8-9821-9BBDFDAAD9D9";
-static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B36ACE7C7BFB";
+static NSString * const kANCSServiceUUIDString = @"7905F431-B5CE-4E99-A40F-4B1E122D00D0"; // ANCS服务
+static NSString * const kANCSNotificationSourceUUIDString = @"9FBF120D-6301-42D9-8C58-25E699A21DBD"; // 通知源
+static NSString * const kANCSControlPointUUIDString = @"69D1D8F3-45E1-49A8-9821-9BBDFDAAD9D9"; // 控制入口
+static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B36ACE7C7BFB"; // 数据源
 
 @interface ANCSController () <CBCentralManagerDelegate, CBPeripheralDelegate>
 
@@ -38,9 +38,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 
 @property (nonatomic, strong) NSMutableDictionary *appIdentifiers;
 
-@property (nonatomic, strong) ANCSTransaction *currentTransaction;
-@property (nonatomic, strong) dispatch_semaphore_t transactionSemaphore;
-@property (nonatomic, strong) dispatch_semaphore_t timeoutSemaphore;
+@property (nonatomic, strong) NSMutableArray* txns;
 @property (nonatomic, strong) dispatch_queue_t transactionQueue;
 
 @end
@@ -65,11 +63,9 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 		_ncsToPeripheral = [NSMutableDictionary new];
 		_peripheralsToNcs = [NSMutableDictionary new];
 		_notifications = [NSMutableDictionary new];
+        _txns = [NSMutableArray new];
 		
-		_transactionSemaphore = dispatch_semaphore_create(1);
 		_transactionQueue = dispatch_queue_create("com.jamiepinkham.ancs_transaction_queue", DISPATCH_QUEUE_SERIAL);
-		
-		_timeoutSemaphore = dispatch_semaphore_create(0);
 		
 	}
 	return self;
@@ -139,6 +135,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 		transaction.completionBlock = ^(id result, NSError *error){
 			if(result)
 			{
+                NSLog(@"retrive app name identifier = %@ result = %@", identifier, result);
 				self.appIdentifiers[identifier] = result;
 				dispatch_async(self.callbackQueue, ^{
 					[self.delegate controller:self didRetrieveAppDisplayName:result forIdentifier:identifier];
@@ -146,7 +143,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 			}
 			else
 			{
-				NSLog(@"retrive app name error = %@", error);
+				NSLog(@"retrive app name identifier = %@ error = %@", identifier, error);
 			}
 			
 		};
@@ -219,14 +216,11 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	}
 }
 
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
-{
-	for(CBService *service in peripheral.services)
-	{
-		if([service.UUID isEqual:self.serviceUUID])
-		{
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
+	for(CBService *service in peripheral.services) {
+		if ([self.serviceUUID isEqual:service.UUID]) {
 			[peripheral discoverCharacteristics:@[self.notificationSourceUUID, self.controlPointUUID, self.dataSourceUUID] forService:service];
-		}
+        }
 	}
 }
 
@@ -236,15 +230,15 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	{
 		for(CBCharacteristic *aChar in service.characteristics)
 		{
-			if ([aChar.UUID isEqual:self.notificationSourceUUID]) // 通知源
+			if ([self.notificationSourceUUID isEqual:aChar.UUID]) // 通知源
 			{
                 self.notificationSourceCharacterstic = aChar;
             }
-            else if ([aChar.UUID isEqual:self.controlPointUUID]) // 操作
+            else if ([self.controlPointUUID isEqual:aChar.UUID]) // 操作
             {
 				self.controlPointCharacteristic = aChar;
 			}
-			else if([aChar.UUID isEqual:self.dataSourceUUID]) // 数据源
+			else if([self.dataSourceUUID isEqual:aChar.UUID]) // 数据源
 			{
 				self.dataSourceCharacteristic = aChar;
 			}
@@ -269,8 +263,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
-	if([characteristic.UUID isEqual:self.notificationSourceUUID])
-	{
+    if([characteristic.UUID isEqual:self.notificationSourceUUID]) { // 通知源发来的消息
 		ANCSNotification *notification = [[ANCSNotification alloc] initWithData:characteristic.value];
 		
 		if(![self.notifications objectForKey:@([notification notificationUid])] && (notification.notificationType != ANCSEventNotificationTypeRemoved))
@@ -285,13 +278,18 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 			ANCSNotificationCenter *center = self.peripheralsToNcs[CFBridgingRelease(CFUUIDCreateString(NULL, peripheral.UUID))];
 			[self.delegate controller:self receivedNotification:notification notificationCenter:center];
 		});
-	}
-	if([characteristic.UUID isEqual:self.dataSourceUUID])
-	{
-		[self.currentTransaction appendData:characteristic.value];
-		if([self.currentTransaction isComplete])
-		{
-			dispatch_semaphore_signal(self.timeoutSemaphore);
+    } else if([characteristic.UUID isEqual:self.dataSourceUUID]) { // 数据源发来的消息
+//        NSLog(@"dataSource.value %lu %@", characteristic.value.length, characteristic.value);
+        ANCSTransaction* txn = _txns.firstObject;
+//        NSLog(@"txn %@", txn.class);
+        if (!txn) return;
+		[txn appendData:characteristic.value];
+		if([txn isComplete]) {
+//            NSLog(@"dataSource.value %lu %@", txn.accumulatedData.length, txn.accumulatedData);
+            [_txns removeObjectAtIndex:0];
+            dispatch_async(self.callbackQueue, ^{
+                txn.completionBlock(txn.result, txn.error);
+            });
 		}
 	}
 }
@@ -300,21 +298,10 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 - (void)executeTransaction:(ANCSTransaction *)transaction onNotificationCenter:(ANCSNotificationCenter *)notificationCenter;
 {
 	dispatch_async(self.transactionQueue, ^{
-		dispatch_semaphore_wait(self.transactionSemaphore, DISPATCH_TIME_FOREVER);
 		CBPeripheral *peripheral = self.ncsToPeripheral[notificationCenter];
-		self.currentTransaction = transaction;
+        [_txns addObject:transaction];
 		NSData *packet = [transaction buildCommandData];
 		[peripheral writeValue:packet forCharacteristic:self.controlPointCharacteristic type:CBCharacteristicWriteWithResponse];
-		
-		//THE TIMEOUT EXISTS BECAUSE OF THE FACT THAT THE GET APP NAME COMMAND IS BROKEN AS OF 9/23/12
-		double timeoutInSeconds = 10.0;
-		dispatch_time_t timeout = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeoutInSeconds * NSEC_PER_SEC));
-		dispatch_semaphore_wait(self.timeoutSemaphore, timeout);
-		
-		transaction.completionBlock([transaction result], [transaction error]);
-		self.currentTransaction = nil;
-		
-		dispatch_semaphore_signal(self.transactionSemaphore);
 	});
 }
 

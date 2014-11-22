@@ -11,7 +11,7 @@
 #import "ANCSNotification.h"
 #import "ANCSNotificationDetails.h"
 
-static uint8_t const kANCSCommandIDGetNotificationAttributes = 0x0;
+static uint8_t const kANCSCommandIDGetNotificationAttributes = ANCSCommandIDGetNotificationAttributes;
 static uint16_t const kANCSAttributeMaxLength = 0xffff;
 #define HEADER_SIZE 5
 

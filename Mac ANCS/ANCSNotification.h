@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, ANCSCategory)
 	ANCSCategoryEntertainment,
 };
 
-typedef NS_ENUM(NSInteger, ANCSCommandId)
+typedef NS_ENUM(uint16_t, ANCSCommandId)
 {
     ANCSCommandIDGetNotificationAttributes = 0,
     ANCSCommandIDGetAppAttributes = 1,
