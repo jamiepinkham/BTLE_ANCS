@@ -33,6 +33,7 @@
 		502E631517EFF7FC00B0478C /* ANCSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 502E631417EFF7FC00B0478C /* ANCSViewController.m */; };
 		502E631717EFF7FC00B0478C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 502E631617EFF7FC00B0478C /* Images.xcassets */; };
 		502E634117EFF89700B0478C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 502E634017EFF89700B0478C /* CoreBluetooth.framework */; };
+		7AF140B61A20623A00EF0283 /* ANCSNotificationActionTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AF140B51A20623A00EF0283 /* ANCSNotificationActionTransaction.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,6 +90,8 @@
 		502E632617EFF7FC00B0478C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		502E632817EFF7FC00B0478C /* ANCS_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ANCS_iOSTests.m; sourceTree = "<group>"; };
 		502E634017EFF89700B0478C /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreBluetooth.framework; sourceTree = DEVELOPER_DIR; };
+		7AF140B41A20623A00EF0283 /* ANCSNotificationActionTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANCSNotificationActionTransaction.h; sourceTree = "<group>"; };
+		7AF140B51A20623A00EF0283 /* ANCSNotificationActionTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANCSNotificationActionTransaction.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +172,7 @@
 				502E62C017ED20E900B0478C /* MainMenu.xib */,
 				502E62C317ED20E900B0478C /* Images.xcassets */,
 				502E62B217ED20E900B0478C /* Supporting Files */,
+				7AF140AD1A205C2700EF0283 /* Transaction */,
 				502E62E117ED211700B0478C /* ANCSController.h */,
 				502E62E217ED211700B0478C /* ANCSController.m */,
 				502E62E417ED231600B0478C /* ANCSNotification.h */,
@@ -177,14 +181,6 @@
 				502E62EB17EE9CDB00B0478C /* ANCSNotificationDetails.m */,
 				502E62E717ED25C400B0478C /* ANCSNotificationCenter.h */,
 				502E62E817ED25C400B0478C /* ANCSNotificationCenter.m */,
-				502E62F317EFC51900B0478C /* ANCSTransaction.h */,
-				502E62F417EFC51900B0478C /* ANCSTransaction.m */,
-				502E62F617EFE82400B0478C /* ANCSAppNameTransaction.h */,
-				502E62F717EFE82400B0478C /* ANCSAppNameTransaction.m */,
-				502E62ED17EEA6D500B0478C /* ANCSNotificationDetailTransaction.h */,
-				502E62EE17EEA6D500B0478C /* ANCSNotificationDetailTransaction.m */,
-				502E62F017EEA98400B0478C /* ANCSDetailTuple.h */,
-				502E62F117EEA98400B0478C /* ANCSDetailTuple.m */,
 			);
 			path = "Mac ANCS";
 			sourceTree = "<group>";
@@ -260,6 +256,23 @@
 				502E632517EFF7FC00B0478C /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7AF140AD1A205C2700EF0283 /* Transaction */ = {
+			isa = PBXGroup;
+			children = (
+				502E62F317EFC51900B0478C /* ANCSTransaction.h */,
+				502E62F417EFC51900B0478C /* ANCSTransaction.m */,
+				502E62F617EFE82400B0478C /* ANCSAppNameTransaction.h */,
+				502E62F717EFE82400B0478C /* ANCSAppNameTransaction.m */,
+				502E62ED17EEA6D500B0478C /* ANCSNotificationDetailTransaction.h */,
+				502E62EE17EEA6D500B0478C /* ANCSNotificationDetailTransaction.m */,
+				7AF140B41A20623A00EF0283 /* ANCSNotificationActionTransaction.h */,
+				7AF140B51A20623A00EF0283 /* ANCSNotificationActionTransaction.m */,
+				502E62F017EEA98400B0478C /* ANCSDetailTuple.h */,
+				502E62F117EEA98400B0478C /* ANCSDetailTuple.m */,
+			);
+			name = Transaction;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -360,6 +373,7 @@
 				502E62E617ED231600B0478C /* ANCSNotification.m in Sources */,
 				502E62F217EEA98400B0478C /* ANCSDetailTuple.m in Sources */,
 				502E62F817EFE82400B0478C /* ANCSAppNameTransaction.m in Sources */,
+				7AF140B61A20623A00EF0283 /* ANCSNotificationActionTransaction.m in Sources */,
 				502E62B817ED20E900B0478C /* main.m in Sources */,
 				502E62EC17EE9CDB00B0478C /* ANCSNotificationDetails.m in Sources */,
 				502E62F517EFC51900B0478C /* ANCSTransaction.m in Sources */,

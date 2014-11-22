@@ -87,7 +87,7 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 		ANCSNotificationDetails *detail = [[ANCSNotificationDetails alloc] init];
 		uint32_t notificationId;
 		[self.transactionData getBytes:&notificationId range:NSMakeRange(1, sizeof(uint32_t))];
-		detail.notificationId = CFSwapInt32LittleToHost(notificationId);
+		detail.notificationUid = CFSwapInt32LittleToHost(notificationId);
 		NSArray *allTuples = [self orderedTuples];
 		for (ANCSDetailTuple *tuple in allTuples)
 		{

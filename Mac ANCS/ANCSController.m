@@ -12,6 +12,7 @@
 #import "ANCSNotificationDetails.h"
 #import "ANCSNotificationDetailTransaction.h"
 #import "ANCSAppNameTransaction.h"
+#import "ANCSNotificationActionTransaction.h"
 
 static NSString * const kANCSServiceUUIDString = @"7905F431-B5CE-4E99-A40F-4B1E122D00D0"; // ANCS服务
 static NSString * const kANCSNotificationSourceUUIDString = @"9FBF120D-6301-42D9-8C58-25E699A21DBD"; // 通知源
@@ -152,6 +153,15 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	}
 }
 
+- (void)performAction:(ANCSActionId)action forNotification:(ANCSNotification*)notification notificationCenter:(ANCSNotificationCenter *)notificationCenter {
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    ANCSNotification *localNote = [self.notifications objectForKey:@([notification notificationUid])];
+    if(localNote)
+    {
+        ANCSTransaction *transaction = [[ANCSNotificationActionTransaction alloc] initWithNotification:localNote action:action];
+        [self executeTransaction:transaction onNotificationCenter:notificationCenter];
+    }
+}
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
 {
@@ -287,9 +297,10 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 		if([txn isComplete]) {
 //            NSLog(@"dataSource.value %lu %@", txn.accumulatedData.length, txn.accumulatedData);
             [_txns removeObjectAtIndex:0];
-            dispatch_async(self.callbackQueue, ^{
-                txn.completionBlock(txn.result, txn.error);
-            });
+            if (txn.completionBlock)
+                dispatch_async(self.callbackQueue, ^{
+                    txn.completionBlock(txn.result, txn.error);
+                });
 		}
 	}
 }

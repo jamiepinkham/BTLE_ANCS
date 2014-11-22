@@ -48,6 +48,12 @@ typedef NS_ENUM(uint8_t, ANCSAppAttributeType)
 	ANCSAppAttributeTypeDisplayName = 0,
 };
 
+typedef NS_ENUM(uint8_t, ANCSActionId)
+{
+    ANCSActionIDPositive = 0,
+    ANCSActionIDNegative = 1,
+};
+
 
 @protocol ANCSControllerDelegate;
 @class ANCSNotification, ANCSNotificationCenter, ANCSNotificationDetails;
@@ -61,6 +67,7 @@ typedef NS_ENUM(uint8_t, ANCSAppAttributeType)
 - (void)connectToNotificationCenter:(ANCSNotificationCenter *)notificationCenter;
 - (void)getAttributesForNotification:(ANCSNotification *)notification detailsMask:(ANCSNotificationDetailsTypeMask)mask notificationCenter:(ANCSNotificationCenter *)notificationCenter;
 - (void)getApplicationNameForIdentifier:(NSString *)identifier onNotificationCenter:(ANCSNotificationCenter *)notificationCenter;
+- (void)performAction:(ANCSActionId)action forNotification:(ANCSNotification*)notification notificationCenter:(ANCSNotificationCenter *)notificationCenter;
 
 @property (nonatomic, readonly, getter = isScanning) BOOL scanning;
 

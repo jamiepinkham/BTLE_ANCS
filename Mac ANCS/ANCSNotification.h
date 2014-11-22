@@ -48,12 +48,6 @@ typedef NS_ENUM(uint16_t, ANCSCommandId)
     ANCSCommandIDPerformNotificationAction  = 2,
 };
 
-typedef NS_ENUM(NSInteger, ANCSActionId)
-{
-    ANCSActionIdPositive = 0,
-    ANCSActionIdNegative = 1,
-};
-
 @interface ANCSNotification : NSObject
 
 - (instancetype)initWithData:(NSData *)data;
