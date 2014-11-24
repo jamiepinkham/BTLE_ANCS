@@ -651,31 +651,10 @@
             <view key="contentView" id="372">
                 <rect key="frame" x="0.0" y="0.0" width="480" height="360"/>
                 <autoresizingMask key="autoresizingMask"/>
-                <subviews>
-                    <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9zG-NP-quS">
-                        <rect key="frame" x="20" y="316" width="173" height="26"/>
-                        <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" usesDataSource="YES" numberOfVisibleItems="10" id="kUJ-r2-Aom">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        </comboBoxCell>
-                    </comboBox>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qlb-JG-cOU">
-                        <rect key="frame" x="198" y="318" width="106" height="23"/>
-                        <buttonCell key="cell" type="smallSquare" title="Remove" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="UO4-hl-Wth">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="removeButtonClick:" target="494" id="ngv-dV-ADf"/>
-                        </connections>
-                    </button>
-                </subviews>
             </view>
         </window>
         <customObject id="494" customClass="JPANCSAppDelegate">
             <connections>
-                <outlet property="uidBox" destination="9zG-NP-quS" id="KC5-4R-ql2"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>
         </customObject>

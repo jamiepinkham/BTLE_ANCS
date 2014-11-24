@@ -52,8 +52,8 @@ typedef NS_ENUM(uint16_t, ANCSCommandId)
 
 - (instancetype)initWithData:(NSData *)data;
 
-@property (nonatomic, readonly) NSInteger notificationUid;
-@property (nonatomic, readonly) NSInteger categoryCount;
+@property (nonatomic, readonly) NSUInteger notificationUid;
+@property (nonatomic, readonly) NSUInteger categoryCount;
 @property (nonatomic, readonly) ANCSEventNotificationType notificationType;
 @property (nonatomic, readonly) ANCSEventFlag eventFlags;
 @property (nonatomic, readonly) ANCSCategory category;

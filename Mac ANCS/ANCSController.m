@@ -35,8 +35,6 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 @property (nonatomic, strong) CBCharacteristic *controlPointCharacteristic;
 @property (nonatomic, strong) CBCharacteristic *dataSourceCharacteristic;
 
-@property (nonatomic, strong) NSMutableDictionary *notifications;
-
 @property (nonatomic, strong) NSMutableDictionary *appIdentifiers;
 
 @property (nonatomic, strong) NSMutableArray* txns;
@@ -63,7 +61,6 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 		_dataSourceUUID = [CBUUID UUIDWithString:kANCSDataSourceUUIDString];
 		_ncsToPeripheral = [NSMutableDictionary new];
 		_peripheralsToNcs = [NSMutableDictionary new];
-		_notifications = [NSMutableDictionary new];
         _txns = [NSMutableArray new];
 		
 		_transactionQueue = dispatch_queue_create("com.jamiepinkham.ancs_transaction_queue", DISPATCH_QUEUE_SERIAL);
@@ -93,7 +90,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 - (void)getAttributesForNotification:(ANCSNotification *)notification detailsMask:(ANCSNotificationDetailsTypeMask)mask notificationCenter:(ANCSNotificationCenter *)notificationCenter
 {
 	NSLog(@"%@",NSStringFromSelector(_cmd));
-	ANCSNotification *localNote = [self.notifications objectForKey:@([notification notificationUid])];
+	ANCSNotification *localNote = [notificationCenter notificationForKey:@([notification notificationUid])];
 	if(localNote)
 	{
 		ANCSTransaction *transaction = [[ANCSNotificationDetailTransaction alloc] initWithNotification:localNote detailsMask:mask];
@@ -102,7 +99,6 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 			{
 				dispatch_async(self.callbackQueue, ^{
 					[self.delegate controller:self didUpdateNotificationDetails:result notificationCenter:notificationCenter];
-					
 				});
 			}
 			else
@@ -155,7 +151,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 
 - (void)performAction:(ANCSActionId)action forNotification:(ANCSNotification*)notification notificationCenter:(ANCSNotificationCenter *)notificationCenter {
     NSLog(@"%@",NSStringFromSelector(_cmd));
-    ANCSNotification *localNote = [self.notifications objectForKey:@([notification notificationUid])];
+    ANCSNotification *localNote = [notificationCenter notificationForKey:@([notification notificationUid])];
     if(localNote)
     {
         ANCSTransaction *transaction = [[ANCSNotificationActionTransaction alloc] initWithNotification:localNote action:action];
@@ -184,12 +180,16 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
-	NSString *name = [peripheral name];
-	ANCSNotificationCenter *center = [[ANCSNotificationCenter alloc] init];
-	[center setUUID:peripheral.UUID];
-	[center setName:name];
-	[self.ncsToPeripheral setObject:peripheral forKey:center];
-	[self.peripheralsToNcs setObject:center forKey:CFBridgingRelease(CFUUIDCreateString(NULL, peripheral.UUID))];
+	NSString* name = [peripheral name],
+    * key = CFBridgingRelease(CFUUIDCreateString(NULL, peripheral.UUID));
+    ANCSNotificationCenter* center = self.peripheralsToNcs[key];
+    if (!center) {
+        center = [[ANCSNotificationCenter alloc] init];
+        [center setUUID:peripheral.UUID];
+        [center setName:name];
+        [self.ncsToPeripheral setObject:peripheral forKey:center];
+        [self.peripheralsToNcs setObject:center forKey:key];
+    }
 	
 	dispatch_async(self.callbackQueue, ^{
 		[self.delegate controller:self foundNotificationCenter:center];
@@ -258,34 +258,27 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
     }
 }
 
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
-{
-	if([characteristic.UUID isEqual:self.notificationSourceUUID])
-	{
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+	if([characteristic.UUID isEqual:self.notificationSourceUUID]) {
 //		NSLog(@"notification source characteristic is notifying = %@, %@", characteristic.isNotifying ? @"YES" : @"NO", error);
-	}
-	else if([characteristic.UUID isEqual:self.dataSourceUUID])
-	{
+	} else if([characteristic.UUID isEqual:self.dataSourceUUID]) {
 //		NSLog(@"data source characteristic is notifying = %@, %@", characteristic.isNotifying ? @"YES" : @"NO", error);
 	}
-	
 }
 
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
-{
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     if([characteristic.UUID isEqual:self.notificationSourceUUID]) { // 通知源发来的消息
+        ANCSNotificationCenter* center = self.peripheralsToNcs[CFBridgingRelease(CFUUIDCreateString(NULL, peripheral.UUID))];
+        if (!center) return;
 		ANCSNotification *notification = [[ANCSNotification alloc] initWithData:characteristic.value];
 		
-		if(![self.notifications objectForKey:@([notification notificationUid])] && (notification.notificationType != ANCSEventNotificationTypeRemoved))
-		{
-			[self.notifications setObject:notification forKey:@(notification.notificationUid)];
-		}
-		else if([self.notifications objectForKey:@([notification notificationUid])] && (notification.notificationType == ANCSEventNotificationTypeRemoved))
-		{
-			[self.notifications removeObjectForKey:@([notification notificationUid])];
+        BOOL exists = !![center notificationForKey:@([notification notificationUid])];
+		if(!exists && (notification.notificationType != ANCSEventNotificationTypeRemoved)) {
+			[center setNotification:notification forKey:@(notification.notificationUid)];
+		} else if(exists && (notification.notificationType == ANCSEventNotificationTypeRemoved)) {
+			[center removeNotificationForKey:@([notification notificationUid])];
 		}
 		dispatch_async(self.callbackQueue, ^{
-			ANCSNotificationCenter *center = self.peripheralsToNcs[CFBridgingRelease(CFUUIDCreateString(NULL, peripheral.UUID))];
 			[self.delegate controller:self receivedNotification:notification notificationCenter:center];
 		});
     } else if([characteristic.UUID isEqual:self.dataSourceUUID]) { // 数据源发来的消息
@@ -311,7 +304,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 	dispatch_async(self.transactionQueue, ^{
 		CBPeripheral *peripheral = self.ncsToPeripheral[notificationCenter];
         if (transaction.needReply)
-        [_txns addObject:transaction];
+            [_txns addObject:transaction];
 		NSData *packet = [transaction buildCommandData];
 		[peripheral writeValue:packet forCharacteristic:self.controlPointCharacteristic type:CBCharacteristicWriteWithResponse];
 	});

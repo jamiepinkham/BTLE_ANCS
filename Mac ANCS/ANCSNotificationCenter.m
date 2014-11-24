@@ -8,7 +8,50 @@
 
 #import "ANCSNotificationCenter.h"
 
-@implementation ANCSNotificationCenter
+@implementation ANCSNotificationCenter {
+    NSMutableArray* _notifications;
+    NSMutableDictionary* _notificationMap;
+}
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _notifications = [NSMutableArray new];
+        _notificationMap = [NSMutableDictionary new];
+        _detailMap = [NSMutableDictionary new];
+    }
+    return self;
+}
+
+- (void)setNotification:(ANCSNotification *)notification forKey:(id<NSCopying>)key {
+    ANCSNotification* old = _notificationMap[key];
+    if (old ) {
+        NSUInteger index = [_notifications indexOfObject:old];
+        [_notifications replaceObjectAtIndex:index withObject:notification];
+    } else {
+        [_notifications addObject:notification];
+    }
+    [_notificationMap setObject:notification forKey:key];
+}
+
+- (ANCSNotification *)notificationForKey:(id)key {
+    return [_notificationMap objectForKey:key];
+}
+
+- (ANCSNotification *)notificationAtIndex:(NSUInteger)index {
+    return [_notifications objectAtIndex:index];
+}
+
+- (void)removeNotificationForKey:(id)key {
+    ANCSNotification* old = [_notificationMap objectForKey:key];
+    if (old) {
+        [_notifications removeObject:old];
+        [_notificationMap removeObjectForKey:key];
+    }
+}
+
+- (NSUInteger)count {
+    return _notifications.count;
+}
 
 - (id)copyWithZone:(NSZone *)zone
 {
