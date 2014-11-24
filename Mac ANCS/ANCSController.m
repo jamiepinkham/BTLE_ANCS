@@ -310,6 +310,7 @@ static NSString * const kANCSDataSourceUUIDString = @"22EAC6E9-24D6-4BB5-BE44-B3
 {
 	dispatch_async(self.transactionQueue, ^{
 		CBPeripheral *peripheral = self.ncsToPeripheral[notificationCenter];
+        if (transaction.needReply)
         [_txns addObject:transaction];
 		NSData *packet = [transaction buildCommandData];
 		[peripheral writeValue:packet forCharacteristic:self.controlPointCharacteristic type:CBCharacteristicWriteWithResponse];

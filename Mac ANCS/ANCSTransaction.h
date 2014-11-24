@@ -22,6 +22,7 @@ typedef NS_ENUM(uint8_t, ANCSTransactionType)
 @interface ANCSTransaction : NSObject
 
 @property (nonatomic, readonly, getter = isComplete) BOOL complete;
+@property (nonatomic, readonly) BOOL needReply;
 @property (nonatomic, readonly) ANCSTransactionType transactionType;
 @property (nonatomic, readonly) NSData *transactionData;
 @property (nonatomic, readonly) NSUUID *identifier;

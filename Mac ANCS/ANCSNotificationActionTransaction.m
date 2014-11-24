@@ -52,6 +52,10 @@ static uint8_t const kANCSCommandIDPerformNotificationAction = ANCSCommandIDPerf
     return [data copy];
 }
 
+- (BOOL)needReply {
+    return NO;
+}
+
 - (id)result {
     return @"OK";
 }

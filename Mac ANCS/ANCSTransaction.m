@@ -103,6 +103,9 @@
 	return complete;
 }
 
+- (BOOL)needReply {
+    return YES;
+}
 
 -(ANCSTransactionType)transactionType
 {
