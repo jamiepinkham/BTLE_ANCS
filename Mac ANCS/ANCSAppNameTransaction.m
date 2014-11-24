@@ -8,8 +8,9 @@
 
 #import "ANCSAppNameTransaction.h"
 #import "ANCSDetailTuple.h"
+#import "ANCSNotification.h"
 
-static uint8_t const kANCSCommandIDGetAppName = 0x1;
+static uint8_t const kANCSCommandIDGetAppName = ANCSCommandIDGetAppAttributes;
 static uint8_t const kANCSAppAttributeIDDisplayName = 0x0;
 static uint16_t const kANCSAttributeMaxLength = 0xffff;
 
@@ -79,8 +80,8 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 {
 	if(self.complete)
 	{
-		NSData *data = [self.transactionData subdataWithRange:NSMakeRange(self.headerLength, [self.transactionData length] - self.headerLength)];
-		return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        ANCSDetailTuple* currentTuple = self.tuples[@(kANCSAppAttributeIDDisplayName)];
+        return currentTuple.value;
 	}
 	return nil;
 }

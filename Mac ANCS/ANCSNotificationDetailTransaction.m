@@ -11,7 +11,7 @@
 #import "ANCSNotification.h"
 #import "ANCSNotificationDetails.h"
 
-static uint8_t const kANCSCommandIDGetNotificationAttributes = 0x0;
+static uint8_t const kANCSCommandIDGetNotificationAttributes = ANCSCommandIDGetNotificationAttributes;
 static uint16_t const kANCSAttributeMaxLength = 0xffff;
 #define HEADER_SIZE 5
 
@@ -60,7 +60,7 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 	
 	[data appendBytes:&kANCSCommandIDGetNotificationAttributes length:sizeof(kANCSCommandIDGetNotificationAttributes)];
 
-	uint32_t notificationId = (uint32_t)[self.notification eventId];
+	uint32_t notificationId = (uint32_t)[self.notification notificationUid];
 	notificationId = CFSwapInt32HostToLittle(notificationId);
 	[data appendBytes:&notificationId length:sizeof(notificationId)];
 	
@@ -87,7 +87,7 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 		ANCSNotificationDetails *detail = [[ANCSNotificationDetails alloc] init];
 		uint32_t notificationId;
 		[self.transactionData getBytes:&notificationId range:NSMakeRange(1, sizeof(uint32_t))];
-		detail.notificationId = CFSwapInt32LittleToHost(notificationId);
+		detail.notificationUid = CFSwapInt32LittleToHost(notificationId);
 		NSArray *allTuples = [self orderedTuples];
 		for (ANCSDetailTuple *tuple in allTuples)
 		{
@@ -114,6 +114,12 @@ static uint16_t const kANCSAttributeMaxLength = 0xffff;
 				case ANCSNotificationAttributeTypeTitle:
 					detail.title = [tuple value];
 					break;
+                case ANCSNotificationAttributeTypePositiveActionLabel:
+                    detail.positionActionLabel = [tuple value];
+                    break;
+                case ANCSNotificationAttributeTypeNegativeActionLabel:
+                    detail.negativeActionLabel = [tuple value];
+                    break;
 				default:
 					break;
 			}

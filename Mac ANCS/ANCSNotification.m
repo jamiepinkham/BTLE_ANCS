@@ -19,9 +19,9 @@
 		[data getBytes:&_eventFlags range:NSMakeRange(1, 1)];
 		[data getBytes:&_category range:NSMakeRange(2, 1)];
 		[data getBytes:&_categoryCount range:NSMakeRange(3, 1)];
-		uint32_t eventId;
-		[data getBytes:&eventId range:NSMakeRange(4, 4)];
-		_eventId = CFSwapInt32LittleToHost(eventId);
+		uint32_t notificationUid;
+		[data getBytes:&notificationUid range:NSMakeRange(4, 4)];
+		_notificationUid = CFSwapInt32LittleToHost(notificationUid);
 	}
 	return self;
 }
@@ -38,18 +38,18 @@
 		return NO;
 	}
 	ANCSNotification *other = (ANCSNotification *)object;
-	return [other eventId] == [self eventId];
+	return [other notificationUid] == [self notificationUid];
 }
 
 - (NSUInteger)hash
 {
-	return self.eventId;
+	return self.notificationUid;
 }
 
 - (NSString *)description
 {
 	NSMutableString *ret = [[NSMutableString alloc] init];
-	[ret appendFormat:@"{\n\t eventId : %lu",self.eventId];
+	[ret appendFormat:@"{\n\t notificationUid : %lu",self.notificationUid];
 	[ret appendFormat:@"\n\t categoryCount : %lu", self.categoryCount];
 	[ret appendFormat:@"\n\t notificationType : %lu", self.notificationType];
 	[ret appendFormat:@"\n\t eventFlags : %lu", self.eventFlags];

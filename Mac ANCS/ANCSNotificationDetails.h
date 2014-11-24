@@ -11,12 +11,14 @@
 
 @interface ANCSNotificationDetails : NSObject
 
-@property (nonatomic, assign) uint16_t notificationId;
+@property (nonatomic, assign) NSUInteger notificationUid;
 @property (nonatomic, copy) NSString *appIdentifier;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *subtitle;
 @property (nonatomic, copy) NSString *message;
 @property (nonatomic, copy) NSString *messageSize;
 @property (nonatomic, copy) NSDate *date;
+@property (nonatomic, copy) NSString *positionActionLabel;
+@property (nonatomic, copy) NSString *negativeActionLabel;
 
 @end

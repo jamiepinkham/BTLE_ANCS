@@ -45,9 +45,10 @@
 	if(self.currentTuple == nil)
 	{
 		uint8_t type;
-		[self.accumulatedData getBytes:&type range:NSMakeRange(self.headerLength, 1)];
+        NSUInteger headerLength = self.headerLength;
+		[self.accumulatedData getBytes:&type range:NSMakeRange(headerLength, 1)];
 		self.currentTuple = self.tuples[@(type)];
-		data = [data subdataWithRange:NSMakeRange(5, [self.transactionData length] - self.headerLength)];
+		data = [data subdataWithRange:NSMakeRange(headerLength, [self.transactionData length] - headerLength)];
 	}
 	NSData *leftOver = [[self currentTuple] appendData:data];
 	while(leftOver != nil)
@@ -102,6 +103,9 @@
 	return complete;
 }
 
+- (BOOL)needReply {
+    return YES;
+}
 
 -(ANCSTransactionType)transactionType
 {

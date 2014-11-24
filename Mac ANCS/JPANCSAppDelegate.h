@@ -11,5 +11,8 @@
 @interface JPANCSAppDelegate : NSObject <NSApplicationDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
+@property (assign) IBOutlet NSComboBox* uidBox;
+
+- (IBAction)removeButtonClick:(id)sender;
 
 @end

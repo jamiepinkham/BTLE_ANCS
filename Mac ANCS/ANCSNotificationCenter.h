@@ -7,10 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ANCSNotification.h"
 
 @interface ANCSNotificationCenter : NSObject <NSCopying>
 
 @property (nonatomic, assign) CFUUIDRef UUID;
 @property (nonatomic, copy) NSString *name;
+
+@property (readonly) NSMutableDictionary* detailMap;
+
+- (void)setNotification:(ANCSNotification*)notification forKey:(id<NSCopying>)key;
+- (ANCSNotification*)notificationForKey:(id)key;
+- (ANCSNotification *)notificationAtIndex:(NSUInteger)index;
+- (void)removeNotificationForKey:(id)key;
+- (NSUInteger)count;
 
 @end
